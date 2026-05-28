@@ -1,6 +1,7 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
 
 module.exports = defineConfig({
   publicPath: '/andyare1234/',
-  outputDir: 'docs'
-})
+  outputDir: 'docs',
+  lintOnSave: false,
+});
