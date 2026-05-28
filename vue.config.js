@@ -1,6 +1,10 @@
-const { defineConfig } = require('@vue/cli-service');
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
-module.exports = defineConfig({
-  transpileDependencies: true,
-  publicPath: '/dist/'
-});
+export default defineConfig({
+  plugins: [vue()],
+  base: '/andyare1234/',
+  build: {
+    outDir: 'docs'
+  }
+})
