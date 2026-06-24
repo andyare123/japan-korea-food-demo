@@ -16,16 +16,14 @@
       <button
         class="navbar-toggler"
         type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#mainNavbar"
+        :aria-expanded="isNavbarOpen ? 'true' : 'false'"
         aria-controls="mainNavbar"
-        aria-expanded="false"
         aria-label="Toggle navigation"
+        @click="toggleMobileNavbar"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div id="mainNavbar" class="collapse navbar-collapse">
+      <div id="mainNavbar" class="collapse navbar-collapse" :class="{ show: isNavbarOpen }" >
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
           <li class="nav-item">
             <router-link
@@ -54,7 +52,7 @@
             @mouseleave="showFavoritePreview = false"
           >
             <router-link class="nav-link icon-link" to="/favorites" @click="closeMobileNavbar" >
-              <i class="bi bi-heart-fill me-1"></i> 我的最愛 
+              <i class="bi bi-heart-fill me-1"></i> 我的最愛
               <span v-if="favoriteCount > 0" class="nav-badge favorite-badge">
                 {{ favoriteCount }}
               </span>
@@ -335,6 +333,7 @@ export default {
       latestPaidOrderId: localStorage.getItem('latestPaidOrderId') || '',
       isOrderDisplayCleared: localStorage.getItem('orderDisplayCleared') === '1',
       defaultImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
+      isNavbarOpen: false,
       status: {
         loadingItem: '',
       },
@@ -374,23 +373,24 @@ export default {
     },
   },
   methods: {
+    toggleMobileNavbar() {
+      this.isNavbarOpen = !this.isNavbarOpen;
+
+      if (!this.isNavbarOpen) {
+        this.showCartPreview = false;
+        this.showFavoritePreview = false;
+        this.showOrderPreview = false;
+      }
+    },
+
     closeMobileNavbar() {
+      this.isNavbarOpen = false;
+
       this.showCartPreview = false;
       this.showFavoritePreview = false;
       this.showOrderPreview = false;
-
-      const navbar = document.getElementById('mainNavbar');
-
-      if (!navbar || !navbar.classList.contains('show')) {
-        return;
-      }
-
-      const collapse = Collapse.getOrCreateInstance(navbar, {
-        toggle: false,
-      });
-
-      collapse.hide();
     },
+
     pushToast(title, content = '', style = 'danger') {
       this.emitter.emit('push-message', {
         style,
@@ -410,9 +410,7 @@ export default {
             final_total: 0,
           };
         })
-        .catch((error) => {
-          console.log('Navbar 取得購物車失敗', error);
-
+        .catch(() => {
           this.pushToast(
             '取得購物車失敗',
             '請稍後再試，或重新整理頁面。',
@@ -485,8 +483,7 @@ export default {
 
           this.orders = {};
         })
-        .catch((error) => {
-          console.log('Navbar 取得指定訂單失敗', error);
+        .catch(() => {
           this.orders = {};
         });
     },

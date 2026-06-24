@@ -519,7 +519,108 @@ export default {
   background: #2d201a;
   border-color: #2d201a;
 }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
+.about-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.about-page .container,
+.about-page .row,
+.about-page [class*="col-"] {
+  max-width: 100%;
+}
+
+.hero-image-card,
+.promise-card,
+.stat-card,
+.feature-card,
+.process-item {
+  max-width: 100%;
+}
+
+@media (max-width: 575.98px) {
+  .about-hero {
+    padding: 46px 0 38px;
+  }
+
+  .about-hero h1 {
+    font-size: 32px;
+    line-height: 1.25;
+  }
+
+  .hero-text {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .hero-image-card {
+    padding: 10px;
+    border-radius: 24px;
+  }
+
+  .hero-image {
+    min-height: 230px;
+    border-radius: 18px;
+  }
+
+  .floating-card {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .floating-card i {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .stat-card,
+  .feature-card,
+  .process-item {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .promise-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 26px 20px;
+    border-radius: 22px;
+  }
+
+  .promise-card h2 {
+    font-size: 24px;
+    line-height: 1.4;
+  }
+
+  .promise-card .btn {
+    width: 100%;
+    white-space: normal;
+  }
+}
 @media (max-width: 991px) {
   .about-hero {
     padding: 64px 0 50px;
