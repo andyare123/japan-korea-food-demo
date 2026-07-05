@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="custom-toast mb-3"
-    :class="toastClass"
-  >
+  <div class="custom-toast mb-3" :class="toastClass">
     <div class="toast-icon">
       {{ icon }}
     </div>
@@ -17,11 +14,7 @@
       </p>
     </div>
 
-    <button
-      type="button"
-      class="toast-close"
-      @click="$emit('remove-message', message.id)"
-    >
+    <button type="button" class="toast-close" @click="$emit('remove-message', message.id)">
       ×
     </button>
   </div>

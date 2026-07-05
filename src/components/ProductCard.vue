@@ -14,9 +14,7 @@
         <div class="modal-header order-modal-header">
           <div>
             <span class="modal-kicker">ORDER DETAIL</span>
-            <h5 id="orderModalLabel" class="modal-title fw-bold mt-1">
-              訂單細節
-            </h5>
+            <h5 id="orderModalLabel" class="modal-title fw-bold mt-1">訂單細節</h5>
           </div>
 
           <button
@@ -33,16 +31,13 @@
             <div>
               <span class="text-muted small">訂單編號</span>
               <h6 class="fw-bold mb-0 order-id">
-                {{ tempOrder.id || '未取得訂單編號' }}
+                {{ tempOrder.id || "未取得訂單編號" }}
               </h6>
             </div>
 
             <div class="text-lg-end">
-              <span
-                class="pay-status"
-                :class="tempOrder.is_paid ? 'paid' : 'unpaid'"
-              >
-                {{ tempOrder.is_paid ? '已付款' : '尚未付款' }}
+              <span class="pay-status" :class="tempOrder.is_paid ? 'paid' : 'unpaid'">
+                {{ tempOrder.is_paid ? "已付款" : "尚未付款" }}
               </span>
             </div>
           </div>
@@ -57,37 +52,33 @@
                   </span>
                   <div>
                     <h5 class="fw-bold mb-1">用戶資料</h5>
-                    <p class="text-muted mb-0 small">
-                      訂購者聯絡資訊
-                    </p>
+                    <p class="text-muted mb-0 small">訂購者聯絡資訊</p>
                   </div>
                 </div>
 
                 <div class="info-list" v-if="tempOrder.user">
                   <div class="info-row">
                     <span>姓名</span>
-                    <strong>{{ tempOrder.user.name || '未填寫' }}</strong>
+                    <strong>{{ tempOrder.user.name || "未填寫" }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>Email</span>
-                    <strong>{{ tempOrder.user.email || '未填寫' }}</strong>
+                    <strong>{{ tempOrder.user.email || "未填寫" }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>電話</span>
-                    <strong>{{ tempOrder.user.tel || '未填寫' }}</strong>
+                    <strong>{{ tempOrder.user.tel || "未填寫" }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>地址</span>
-                    <strong>{{ tempOrder.user.address || '未填寫' }}</strong>
+                    <strong>{{ tempOrder.user.address || "未填寫" }}</strong>
                   </div>
                 </div>
 
-                <div v-else class="empty-box">
-                  尚無用戶資料
-                </div>
+                <div v-else class="empty-box">尚無用戶資料</div>
               </section>
             </div>
 
@@ -100,9 +91,7 @@
                   </span>
                   <div>
                     <h5 class="fw-bold mb-1">訂單資訊</h5>
-                    <p class="text-muted mb-0 small">
-                      訂單時間、付款狀態與總金額
-                    </p>
+                    <p class="text-muted mb-0 small">訂單時間、付款狀態與總金額</p>
                   </div>
                 </div>
 
@@ -110,7 +99,7 @@
                   <div class="order-info-item">
                     <span>下單時間</span>
                     <strong>
-                      {{ tempOrder.create_at ? $filters.date(tempOrder.create_at) : '未取得時間' }}
+                      {{ tempOrder.create_at ? $filters.date(tempOrder.create_at) : "未取得時間" }}
                     </strong>
                   </div>
 
@@ -120,16 +109,14 @@
                       <template v-if="tempOrder.paid_date">
                         {{ $filters.date(tempOrder.paid_date) }}
                       </template>
-                      <template v-else>
-                        尚未付款
-                      </template>
+                      <template v-else> 尚未付款 </template>
                     </strong>
                   </div>
 
                   <div class="order-info-item">
                     <span>付款狀態</span>
                     <strong :class="tempOrder.is_paid ? 'text-success' : 'text-muted'">
-                      {{ tempOrder.is_paid ? '已付款' : '尚未付款' }}
+                      {{ tempOrder.is_paid ? "已付款" : "尚未付款" }}
                     </strong>
                   </div>
 
@@ -147,9 +134,7 @@
                   </span>
                   <div>
                     <h5 class="fw-bold mb-1">選購商品</h5>
-                    <p class="text-muted mb-0 small">
-                      本次訂單的餐點明細
-                    </p>
+                    <p class="text-muted mb-0 small">本次訂單的餐點明細</p>
                   </div>
                 </div>
 
@@ -170,10 +155,10 @@
                             <span class="product-dot"></span>
                             <div>
                               <strong>
-                                {{ item.product?.title || '未命名商品' }}
+                                {{ item.product?.title || "未命名商品" }}
                               </strong>
                               <small class="text-muted d-block">
-                                {{ item.product?.category || '精選料理' }}
+                                {{ item.product?.category || "精選料理" }}
                               </small>
                             </div>
                           </div>
@@ -181,7 +166,7 @@
 
                         <td class="text-center">
                           <span class="qty-pill">
-                            {{ item.qty || 0 }} {{ item.product?.unit || '份' }}
+                            {{ item.qty || 0 }} {{ item.product?.unit || "份" }}
                           </span>
                         </td>
 
@@ -193,9 +178,7 @@
 
                     <tfoot>
                       <tr>
-                        <td colspan="2" class="text-end fw-bold">
-                          訂單總計
-                        </td>
+                        <td colspan="2" class="text-end fw-bold">訂單總計</td>
                         <td class="text-end total-price">
                           {{ $filters.currency(tempOrder.total || 0) }}
                         </td>
@@ -204,9 +187,7 @@
                   </table>
                 </div>
 
-                <div v-else class="empty-box">
-                  此訂單尚無商品資料
-                </div>
+                <div v-else class="empty-box">此訂單尚無商品資料</div>
               </section>
             </div>
           </div>
@@ -214,19 +195,11 @@
 
         <!-- Footer -->
         <div class="modal-footer order-modal-footer">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             關閉
           </button>
 
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="$emit('update-order', tempOrder)"
-          >
+          <button type="button" class="btn btn-brand" @click="$emit('update-order', tempOrder)">
             確認更新
           </button>
         </div>
@@ -236,11 +209,10 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/extensions
-import modalMixin from '@/mixins/modalMixins';
+import modalMixin from '../mixins/modalMixins';
 
 export default {
-  name: 'OrderModal',
+  name: 'ProductCard',
   props: {
     order: {
       type: Object,
@@ -251,7 +223,6 @@ export default {
   },
   emits: ['update-order'],
   mixins: [modalMixin],
-  inject: ['emitter'],
   data() {
     return {
       status: {},
@@ -309,9 +280,7 @@ export default {
 .order-modal-header {
   padding: 26px 32px;
   color: #ffffff;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.98), rgba(55, 38, 31, 0.98)),
-    #2b211e;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.98), rgba(55, 38, 31, 0.98)), #2b211e;
   border-bottom: 0;
 }
 

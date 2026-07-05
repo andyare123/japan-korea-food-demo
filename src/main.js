@@ -1,4 +1,3 @@
-/* eslint-disable import/no-duplicates */
 import { createApp } from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
@@ -23,55 +22,11 @@ import $httpMessageState from './methods/pushMessageState';
 
 axios.defaults.withCredentials = true;
 
-const token = document.cookie.replace(
-  /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
-  '$1',
-);
+const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
 
 if (token) {
   axios.defaults.headers.common.Authorization = token;
 }
-
-const app = createApp(App);
-
-const emitter = {
-  events: {},
-
-  on(eventName, callback) {
-    if (!this.events[eventName]) {
-      this.events[eventName] = [];
-    }
-
-    this.events[eventName].push(callback);
-  },
-
-  off(eventName, callback) {
-    if (!this.events[eventName]) {
-      return;
-    }
-
-    this.events[eventName] = this.events[eventName].filter(
-      (eventCallback) => eventCallback !== callback,
-    );
-  },
-
-  emit(eventName, payload) {
-    if (!this.events[eventName]) {
-      return;
-    }
-
-    this.events[eventName].forEach((callback) => {
-      callback(payload);
-    });
-  },
-};
-
-app.provide('emitter', emitter);
-
-app.config.globalProperties.$filters = {
-  date,
-  currency,
-};
 
 Object.keys(AllRules).forEach((rule) => {
   if (rule !== 'all') {
@@ -99,6 +54,13 @@ configure({
 });
 
 setLocale('zh_TW');
+
+const app = createApp(App);
+
+app.config.globalProperties.$filters = {
+  date,
+  currency,
+};
 
 app.config.globalProperties.$httpMessageState = $httpMessageState;
 

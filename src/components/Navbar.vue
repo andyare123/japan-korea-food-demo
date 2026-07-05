@@ -1,12 +1,7 @@
-<!-- eslint-disable max-len -->
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top main-navbar">
     <div class="container">
-      <router-link
-        class="navbar-brand fw-bold brand-text"
-        to="/"
-        @click="closeMobileNavbar"
-      >
+      <router-link class="navbar-brand fw-bold brand-text" to="/" @click="closeMobileNavbar">
         <span class="brand-icon">
           <i class="bi bi-shop-window"></i>
         </span>
@@ -23,24 +18,16 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div id="mainNavbar" class="collapse navbar-collapse" :class="{ show: isNavbarOpen }" >
+      <div id="mainNavbar" class="collapse navbar-collapse" :class="{ show: isNavbarOpen }">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
           <li class="nav-item">
-            <router-link
-              class="nav-link"
-              to="/products"
-              @click="closeMobileNavbar"
-            >
+            <router-link class="nav-link" to="/products" @click="closeMobileNavbar">
               日韓料理列表
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link
-              class="nav-link"
-              to="/about"
-              @click="closeMobileNavbar"
-            >
+            <router-link class="nav-link" to="/about" @click="closeMobileNavbar">
               關於和韓食堂
             </router-link>
           </li>
@@ -51,7 +38,7 @@
             @mouseenter="showFavoritePreview = true"
             @mouseleave="showFavoritePreview = false"
           >
-            <router-link class="nav-link icon-link" to="/favorites" @click="closeMobileNavbar" >
+            <router-link class="nav-link icon-link" to="/favorites" @click="closeMobileNavbar">
               <i class="bi bi-heart-fill me-1"></i> 我的最愛
               <span v-if="favoriteCount > 0" class="nav-badge favorite-badge">
                 {{ favoriteCount }}
@@ -65,21 +52,14 @@
               </div>
 
               <div v-if="favorites.length">
-                <div
-                  v-for="item in favorites"
-                  :key="item.id"
-                  class="preview-item"
-                >
+                <div v-for="item in favorites" :key="item.id" class="preview-item">
                   <div
                     class="preview-img"
                     :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
                   ></div>
 
                   <div class="preview-info">
-                    <router-link
-                      class="preview-title"
-                      :to="`/product/${item.id}`"
-                    >
+                    <router-link class="preview-title" :to="`/product/${item.id}`">
                       {{ item.title }}
                     </router-link>
 
@@ -88,16 +68,30 @@
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm"
-                    @click.prevent="removeFavorite(item.id)"
-                  >
-                    移除
-                  </button>
+                  <div class="d-flex flex-column gap-2">
+                    <button
+                      type="button"
+                      class="btn btn-brand btn-sm"
+                      @click.prevent="addFavoriteToCart(item)"
+                    >
+                      加購
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      @click.prevent="removeFavorite(item.id)"
+                    >
+                      移除
+                    </button>
+                  </div>
                 </div>
 
-                <router-link to="/favorites" class="btn btn-danger w-100 mt-3" @click="closeMobileNavbar">
+                <router-link
+                  to="/favorites"
+                  class="btn btn-danger w-100 mt-3"
+                  @click="closeMobileNavbar"
+                >
                   查看我的最愛
                 </router-link>
               </div>
@@ -105,7 +99,11 @@
               <div v-else class="preview-empty">
                 <i class="bi bi-heart"></i>
                 <p class="mb-2">我的最愛暫無資料</p>
-                <router-link to="/products" class="btn btn-outline-danger btn-sm" @click="closeMobileNavbar">
+                <router-link
+                  to="/products"
+                  class="btn btn-outline-danger btn-sm"
+                  @click="closeMobileNavbar"
+                >
                   去收藏料理
                 </router-link>
               </div>
@@ -118,7 +116,7 @@
             @mouseenter="showCartPreview = true"
             @mouseleave="showCartPreview = false"
           >
-            <router-link class="nav-link icon-link" to="/user/cart" @click="closeMobileNavbar" >
+            <router-link class="nav-link icon-link" to="/user/cart" @click="closeMobileNavbar">
               <i class="bi bi-bag-heart-fill me-1"></i>
               購物車
               <span v-if="cartCount > 0" class="nav-badge">
@@ -172,7 +170,7 @@
                         v-model.number="item.qty"
                         :disabled="status.loadingItem === item.id"
                         @change="updateCart(item)"
-                      >
+                      />
 
                       <button
                         type="button"
@@ -200,7 +198,11 @@
                   <strong>{{ $filters.currency(cart.final_total || cart.total) }}</strong>
                 </div>
 
-                <router-link to="/user/cart" class="btn btn-danger w-100 mt-3" @click="closeMobileNavbar">
+                <router-link
+                  to="/user/cart"
+                  class="btn btn-danger w-100 mt-3"
+                  @click="closeMobileNavbar"
+                >
                   查看購物車內容
                 </router-link>
               </div>
@@ -208,7 +210,11 @@
               <div v-else class="preview-empty">
                 <i class="bi bi-bag-x"></i>
                 <p class="mb-2">購物車暫無商品</p>
-                <router-link to="/products" class="btn btn-outline-danger btn-sm" @click="closeMobileNavbar">
+                <router-link
+                  to="/products"
+                  class="btn btn-outline-danger btn-sm"
+                  @click="closeMobileNavbar"
+                >
                   去挑選料理
                 </router-link>
               </div>
@@ -221,7 +227,7 @@
             @mouseenter="openOrderPreview"
             @mouseleave="showOrderPreview = false"
           >
-            <router-link class="nav-link icon-link" to="/admin/orders" @click="closeMobileNavbar" >
+            <router-link class="nav-link icon-link" to="/admin/orders" @click="closeMobileNavbar">
               <i class="bi bi-receipt-cutoff me-1"></i>
               訂單查詢
               <span v-if="orderCount > 0" class="nav-badge order-badge">
@@ -258,23 +264,17 @@
                   </div>
 
                   <div class="preview-info">
-                    <router-link
-                      class="preview-title"
-                      to="/admin/orders"
-                    >
-                      {{ item.user?.name || '未填寫姓名' }}
+                    <router-link class="preview-title" to="/admin/orders">
+                      {{ item.user?.name || "未填寫姓名" }}
                     </router-link>
 
                     <div class="small text-muted">
-                      {{ item.user?.email || '未填寫 Email' }}
+                      {{ item.user?.email || "未填寫 Email" }}
                     </div>
 
                     <div class="small mt-1">
-                      <span
-                        class="mini-status"
-                        :class="isOrderPaid(item) ? 'paid' : 'unpaid'"
-                      >
-                        {{ isOrderPaid(item) ? '已付款' : '未付款' }}
+                      <span class="mini-status" :class="isOrderPaid(item) ? 'paid' : 'unpaid'">
+                        {{ isOrderPaid(item) ? "已付款" : "未付款" }}
                       </span>
 
                       <strong class="text-danger ms-2">
@@ -283,14 +283,15 @@
                     </div>
                   </div>
 
-                  <router-link
-                    to="/admin/orders"
-                    class="btn btn-outline-primary btn-sm"
-                  >
+                  <router-link to="/admin/orders" class="btn btn-outline-brand btn-sm">
                     查看
                   </router-link>
                 </div>
-               <router-link to="/admin/orders" class="btn btn-danger w-100 mt-3" @click="closeMobileNavbar">
+                <router-link
+                  to="/admin/orders"
+                  class="btn btn-danger w-100 mt-3"
+                  @click="closeMobileNavbar"
+                >
                   查看全部訂單
                 </router-link>
               </div>
@@ -298,7 +299,11 @@
               <div v-else class="preview-empty">
                 <i class="bi bi-receipt"></i>
                 <p class="mb-2">目前沒有訂單資料</p>
-                <router-link to="/products" class="btn btn-outline-danger btn-sm" @click="closeMobileNavbar">
+                <router-link
+                  to="/products"
+                  class="btn btn-outline-danger btn-sm"
+                  @click="closeMobileNavbar"
+                >
                   前往點餐
                 </router-link>
               </div>
@@ -311,13 +316,11 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { Collapse } from 'bootstrap';
+import emitter from '../methods/emitter';
 
 const { VUE_APP_API, VUE_APP_PATH } = process.env;
 
 export default {
-  inject: ['emitter'],
   data() {
     return {
       cart: {
@@ -392,17 +395,64 @@ export default {
     },
 
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
       });
     },
 
+    addFavoriteToCart(item) {
+      if (!item || !item.id) {
+        this.pushToast(
+          '加入購物車失敗',
+          '找不到料理資料，請稍後再試。',
+          'danger',
+        );
+        return;
+      }
+
+      const url = `${VUE_APP_API}/api/${VUE_APP_PATH}/cart`;
+
+      const data = {
+        product_id: item.id,
+        qty: 1,
+      };
+
+      this.$http
+        .post(url, { data })
+        .then((res) => {
+          if (res.data.success) {
+            this.pushToast(
+              '已加入購物車',
+              `已成功加入 1 ${item.unit || '份'} ${item.title || '餐點'}。`,
+              'success',
+            );
+
+            this.getCart();
+            emitter.emit('cart-updated');
+          } else {
+            this.pushToast(
+              '加入購物車失敗',
+              res.data.message || '請稍後再試。',
+              'danger',
+            );
+          }
+        })
+        .catch(() => {
+          this.pushToast(
+            '加入購物車失敗',
+            '請確認網路連線或稍後再試。',
+            'danger',
+          );
+        });
+    },
+
     getCart() {
       const url = `${VUE_APP_API}/api/${VUE_APP_PATH}/cart`;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((response) => {
           this.cart = response.data.data || {
             carts: [],
@@ -411,11 +461,7 @@ export default {
           };
         })
         .catch(() => {
-          this.pushToast(
-            '取得購物車失敗',
-            '請稍後再試，或重新整理頁面。',
-            'danger',
-          );
+          this.pushToast('取得購物車失敗', '請稍後再試，或重新整理頁面。', 'danger');
         });
     },
 
@@ -424,9 +470,12 @@ export default {
     },
 
     increaseCartQty(item) {
-      // eslint-disable-next-line no-param-reassign
-      item.qty = Number(item.qty || 1) + 1;
-      this.updateCart(item);
+      const newQty = Number(item.qty || 1) + 1;
+
+      this.updateCart({
+        ...item,
+        qty: newQty,
+      });
     },
 
     decreaseCartQty(item) {
@@ -437,9 +486,10 @@ export default {
         return;
       }
 
-      // eslint-disable-next-line no-param-reassign
-      item.qty = qty - 1;
-      this.updateCart(item);
+      this.updateCart({
+        ...item,
+        qty: qty - 1,
+      });
     },
 
     getOrders() {
@@ -466,7 +516,8 @@ export default {
 
       const url = `${VUE_APP_API}/api/${VUE_APP_PATH}/order/${orderId}`;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((response) => {
           if (response.data.success && response.data.order) {
             const order = {
@@ -496,7 +547,7 @@ export default {
       localStorage.removeItem('latestPaidOrderId');
       localStorage.setItem('orderDisplayCleared', '1');
 
-      window.dispatchEvent(new Event('orders-cleared'));
+      emitter.emit('orders-cleared');
     },
 
     updateCart(item) {
@@ -518,10 +569,9 @@ export default {
 
       this.status.loadingItem = item.id;
 
-      this.$http.put(url, { data: cart })
+      this.$http
+        .put(url, { data: cart })
         .then((res) => {
-          this.$httpMessageState(res, '更新購物車');
-
           if (res.data.success) {
             this.pushToast(
               '購物車已更新',
@@ -530,23 +580,13 @@ export default {
             );
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '更新購物車失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('更新購物車失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('Navbar 更新購物車失敗:', error);
-
-          this.pushToast(
-            '更新購物車失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('更新購物車失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -561,35 +601,20 @@ export default {
 
       this.status.loadingItem = id;
 
-      this.$http.delete(url)
+      this.$http
+        .delete(url)
         .then((response) => {
-          this.$httpMessageState(response, '移除購物車品項');
-
           if (response.data.success) {
-            this.pushToast(
-              '已移除購物車餐點',
-              `${title} 已從購物車移除。`,
-              'warning',
-            );
+            this.pushToast('已移除購物車餐點', `${title} 已從購物車移除。`, 'warning');
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '移除購物車餐點失敗',
-              response.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('移除購物車餐點失敗', response.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('Navbar 移除購物車品項失敗:', error);
-
-          this.pushToast(
-            '移除購物車餐點失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('移除購物車餐點失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -603,13 +628,9 @@ export default {
       this.favorites = this.favorites.filter((item) => item.id !== id);
       localStorage.setItem('favoriteFoods', JSON.stringify(this.favorites));
 
-      this.pushToast(
-        '已移除我的最愛',
-        `${title} 已從收藏清單移除。`,
-        'warning',
-      );
+      this.pushToast('已移除我的最愛', `${title} 已從收藏清單移除。`, 'warning');
 
-      window.dispatchEvent(new Event('favorites-updated'));
+      emitter.emit('favorites-updated');
     },
 
     openOrderPreview() {
@@ -618,14 +639,16 @@ export default {
     },
 
     isOrderPaid(order) {
-      return order.is_paid === true
+      return (
+        order.is_paid === true
         || order.is_paid === 1
         || order.is_paid === '1'
-        || order.is_paid === 'true';
+        || order.is_paid === 'true'
+      );
     },
 
-    handleOrdersDisplayReset(event) {
-      const paidOrderId = event?.detail?.orderId || localStorage.getItem('latestPaidOrderId') || '';
+    handleOrdersDisplayReset(payload = {}) {
+      const paidOrderId = payload.orderId || localStorage.getItem('latestPaidOrderId') || '';
 
       this.isOrderDisplayCleared = false;
       this.latestPaidOrderId = paidOrderId;
@@ -660,18 +683,18 @@ export default {
       this.orders = {};
     }
 
-    window.addEventListener('cart-updated', this.getCart);
-    window.addEventListener('favorites-updated', this.getFavorites);
-    window.addEventListener('orders-updated', this.getOrders);
-    window.addEventListener('orders-display-reset', this.handleOrdersDisplayReset);
-    window.addEventListener('orders-cleared', this.handleOrdersCleared);
+    emitter.on('cart-updated', this.getCart);
+    emitter.on('favorites-updated', this.getFavorites);
+    emitter.on('orders-updated', this.getOrders);
+    emitter.on('orders-display-reset', this.handleOrdersDisplayReset);
+    emitter.on('orders-cleared', this.handleOrdersCleared);
   },
   beforeUnmount() {
-    window.removeEventListener('cart-updated', this.getCart);
-    window.removeEventListener('favorites-updated', this.getFavorites);
-    window.removeEventListener('orders-updated', this.getOrders);
-    window.removeEventListener('orders-display-reset', this.handleOrdersDisplayReset);
-    window.removeEventListener('orders-cleared', this.handleOrdersCleared);
+    emitter.off('cart-updated', this.getCart);
+    emitter.off('favorites-updated', this.getFavorites);
+    emitter.off('orders-updated', this.getOrders);
+    emitter.off('orders-display-reset', this.handleOrdersDisplayReset);
+    emitter.off('orders-cleared', this.handleOrdersCleared);
   },
 };
 </script>
@@ -685,7 +708,7 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #b23a2e;
+  color: var(--brand-primary);
   letter-spacing: 2px;
   font-size: 24px;
   text-decoration: none;
@@ -699,7 +722,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  background: linear-gradient(135deg, #b23a2e, #df6b4f);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
   box-shadow: 0 8px 18px rgba(178, 58, 46, 0.22);
 }
 
@@ -714,13 +737,13 @@ export default {
 }
 
 .nav-link {
-  color: #333;
+  color: var(--brand-text);
   font-weight: 700;
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
-  color: #b23a2e !important;
+  color: var(--brand-primary) !important;
 }
 
 .order-btn {
@@ -756,7 +779,7 @@ export default {
   height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: #dc3545;
+  background: var(--brand-primary);
   color: #fff;
   font-size: 11px;
   font-weight: 900;
@@ -774,7 +797,7 @@ export default {
 }
 
 .favorite-badge {
-  background: #e83e8c;
+  background: var(--brand-primary);
 }
 
 .preview-wrapper {
@@ -791,7 +814,7 @@ export default {
   padding: 18px;
   border-radius: 20px;
   background: #fff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 18px 45px rgba(80, 40, 20, 0.16);
   z-index: 5000;
 }
@@ -808,7 +831,7 @@ export default {
 }
 
 .preview-header strong {
-  color: #b23a2e;
+  color: var(--brand-primary);
   font-size: 18px;
 }
 
@@ -864,9 +887,9 @@ export default {
   justify-content: space-between;
   margin-top: 16px;
   padding: 14px;
-  border-radius: 16px;
-  background: #fff8f2;
-  color: #b23a2e;
+  background: var(--brand-bg-soft);
+  color: var(--brand-muted);
+  border: 1px dashed var(--brand-border);
 }
 
 .preview-empty {
@@ -909,8 +932,8 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #b23a2e;
-  background: #fff0e7;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
   font-size: 24px;
 }
 
@@ -924,13 +947,13 @@ export default {
 }
 
 .mini-status.paid {
-  color: #198754;
+  color: var(--state-success);
   background: #e9f8ef;
 }
 
 .mini-status.unpaid {
-  color: #b23a2e;
-  background: #fff0e7;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
 }
 .clear-order-btn {
   padding: 3px 8px;
@@ -938,9 +961,54 @@ export default {
   font-size: 12px;
   font-weight: 800;
 }
+
+.hero-section {
+  padding-top: 16px;
+}
+
 @media (max-width: 991px) {
+  .main-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 5000;
+  }
+
+  #mainNavbar {
+    position: absolute;
+    top: 100%;
+    left: 12px;
+    right: 12px;
+    z-index: 4999;
+    padding: 14px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid var(--brand-border);
+    box-shadow: 0 18px 45px rgba(80, 40, 20, 0.18);
+  }
+
+  #mainNavbar:not(.show) {
+    display: none;
+  }
+
+  #mainNavbar.show {
+    display: block;
+  }
+
   .navbar-nav {
-    padding-top: 16px;
+    align-items: stretch !important;
+    padding-top: 0;
+  }
+
+  .navbar-nav .nav-link {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link.router-link-active {
+    background: var(--brand-primary-light);
   }
 
   .order-btn {
@@ -949,15 +1017,18 @@ export default {
   }
 
   .preview-panel,
-  .cart-preview-panel {
+  .cart-preview-panel,
+  .order-preview-panel {
     position: static;
     width: 100%;
     max-height: none;
     margin-top: 8px;
     box-shadow: none;
   }
-  .order-preview-panel {
-    width: 100%;
+}
+@media (max-width: 768px) {
+  .hero-section {
+    padding-top: 24px;
   }
 }
 </style>

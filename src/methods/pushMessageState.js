@@ -1,20 +1,21 @@
-/* eslint-disable func-names */
-import emitter from '@/methods/emitter';
+/*  func-names */
+// -next-line import/extensions
+import emitter from "./emitter.js";
 
-export default function (response, title = '更新') {
+export default function (response, title = "更新") {
   if (response.data.success) {
-    emitter.emit('push-message', {
-      style: 'success',
+    emitter.emit("push-message", {
+      style: "success",
       title: `${title}成功`,
     });
   } else {
     // 有些訊息是字串，有些則是陣列，在此統一格式
-    const message = typeof response.data.message === 'string'
-      ? [response.data.message] : response.data.message;
-    emitter.emit('push-message', {
-      style: 'danger',
+    const message =
+      typeof response.data.message === "string" ? [response.data.message] : response.data.message;
+    emitter.emit("push-message", {
+      style: "danger",
       title: `${title}失敗`,
-      content: message.join('、'),
+      content: message.join("、"),
     });
   }
 }

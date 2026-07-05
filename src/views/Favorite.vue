@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <Loading :active="isLoading" />
 
@@ -18,31 +17,23 @@
           <div>
             <span class="section-label">FAVORITE LIST</span>
             <h3 class="fw-bold mt-2 mb-1">已收藏料理</h3>
-            <p class="text-muted mb-0">
-              這些是你目前加入收藏的料理。
-            </p>
+            <p class="text-muted mb-0">這些是你目前加入收藏的料理。</p>
           </div>
         </div>
 
         <div v-if="favorites.length" class="row g-4">
-          <div
-            v-for="item in favorites"
-            :key="item.id"
-            class="col-md-6 col-lg-4"
-          >
+          <div v-for="item in favorites" :key="item.id" class="col-md-6 col-lg-4">
             <div class="food-card favorite-card">
               <div
                 class="food-img"
                 :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
               >
-                <span class="card-tag">
-                  已收藏
-                </span>
+                <span class="card-tag"> 已收藏 </span>
               </div>
 
               <div class="p-4">
                 <span class="badge bg-light text-dark mb-2">
-                  {{ item.category || '精選料理' }}
+                  {{ item.category || "精選料理" }}
                 </span>
 
                 <h5 class="fw-bold mb-2">
@@ -50,24 +41,30 @@
                 </h5>
 
                 <p class="text-muted food-desc">
-                  {{ item.description || item.content || '日韓人氣料理。' }}
+                  {{ item.description || item.content || "日韓人氣料理。" }}
                 </p>
 
-                <p class="text-danger fw-bold h5 mb-3">
-                  NT$ {{ item.price }}
-                </p>
+                <p class="text-danger fw-bold h5 mb-3">NT$ {{ item.price }}</p>
 
-                <div class="d-flex gap-2">
+                <div class="favorite-actions">
                   <router-link
                     :to="`/product/${item.id}`"
-                    class="btn btn-outline-dark flex-fill"
+                    class="btn btn-outline-brand"
                   >
                     查看
                   </router-link>
 
                   <button
                     type="button"
-                    class="btn btn-outline-danger flex-fill"
+                    class="btn btn-brand"
+                    @click="addToCart(item)"
+                  >
+                    加入購物車
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
                     @click="removeFavorite(item.id)"
                   >
                     移除
@@ -81,12 +78,8 @@
         <div v-else class="empty-box text-center">
           <div class="display-4 mb-3">🤍</div>
           <h4 class="fw-bold">目前沒有收藏料理</h4>
-          <p class="text-muted">
-            去日韓料理頁面看看，把喜歡的料理加入我的最愛吧。
-          </p>
-          <router-link to="/products" class="btn btn-danger">
-            前往日韓料理
-          </router-link>
+          <p class="text-muted">去日韓料理頁面看看，把喜歡的料理加入我的最愛吧。</p>
+          <router-link to="/products" class="btn btn-danger"> 前往日韓料理 </router-link>
         </div>
       </section>
 
@@ -101,40 +94,28 @@
             </p>
           </div>
 
-          <router-link to="/products" class="btn btn-outline-danger">
-            查看更多料理
-          </router-link>
+          <router-link to="/products" class="btn btn-outline-danger"> 查看更多料理 </router-link>
         </div>
 
         <div v-if="recommendedProducts.length" class="row g-4">
-          <div
-            v-for="item in recommendedProducts"
-            :key="item.id"
-            class="col-md-6 col-lg-4"
-          >
+          <div v-for="item in recommendedProducts" :key="item.id" class="col-md-6 col-lg-4">
             <div class="food-card recommend-card">
               <div
                 class="food-img"
                 :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
               >
-                <button
-                  type="button"
-                  class="favorite-btn"
-                  @click="toggleFavorite(item)"
-                >
-                  {{ isFavorite(item.id) ? '❤️' : '🤍' }}
+                <button type="button" class="favorite-btn" @click="toggleFavorite(item)">
+                  {{ isFavorite(item.id) ? "❤️" : "🤍" }}
                 </button>
               </div>
 
               <div class="p-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <span class="badge bg-light text-dark">
-                    {{ item.category || '精選料理' }}
+                    {{ item.category || "精選料理" }}
                   </span>
 
-                  <small class="text-muted">
-                    已售出 {{ item.num || 0 }} 份
-                  </small>
+                  <small class="text-muted"> 已售出 {{ item.num || 0 }} 份 </small>
                 </div>
 
                 <h5 class="fw-bold mb-2">
@@ -147,7 +128,7 @@
                 </p>
 
                 <p class="text-muted food-desc">
-                  {{ item.description || item.content || '日韓人氣料理。' }}
+                  {{ item.description || item.content || "日韓人氣料理。" }}
                 </p>
 
                 <div class="mb-3">
@@ -158,22 +139,23 @@
                     NT$ {{ item.origin_price }}
                   </del>
 
-                  <span class="h5 text-danger fw-bold">
-                    NT$ {{ item.price }}
-                  </span>
+                  <span class="h5 text-danger fw-bold"> NT$ {{ item.price }} </span>
                 </div>
 
-                <div class="d-flex gap-2">
-                  <router-link
-                    :to="`/product/${item.id}`"
-                    class="btn btn-outline-dark flex-fill"
-                  >
+                <div class="recommend-actions">
+                  <router-link :to="`/product/${item.id}`" class="btn btn-outline-dark flex-fill">
                     查看詳情
                   </router-link>
-
+                   <button
+                    type="button"
+                    class="btn btn-brand"
+                    @click="addToCart(item)"
+                  >
+                    加入購物車
+                  </button>
                   <button
                     type="button"
-                    class="btn btn-danger flex-fill"
+                    class="btn btn-brand"
                     @click="toggleFavorite(item)"
                   >
                     加入收藏
@@ -187,12 +169,8 @@
         <div v-else class="empty-box text-center">
           <div class="display-4 mb-3">🍱</div>
           <h4 class="fw-bold">目前沒有推薦料理</h4>
-          <p class="text-muted">
-            你可能已經收藏所有料理，或目前尚未取得料理資料。
-          </p>
-          <router-link to="/products" class="btn btn-danger">
-            前往日韓料理
-          </router-link>
+          <p class="text-muted">你可能已經收藏所有料理，或目前尚未取得料理資料。</p>
+          <router-link to="/products" class="btn btn-danger"> 前往日韓料理 </router-link>
         </div>
       </section>
     </div>
@@ -200,10 +178,11 @@
 </template>
 
 <script>
+import emitter from '../methods/emitter';
+
 const { VUE_APP_API, VUE_APP_PATH } = process.env;
 
 export default {
-  inject: ['emitter'],
   data() {
     return {
       favorites: JSON.parse(localStorage.getItem('favoriteFoods')) || [],
@@ -214,19 +193,15 @@ export default {
   },
   computed: {
     favoriteCategoryList() {
-      return [...new Set(
-        this.favorites
-          .map((item) => item.category)
-          .filter((category) => category),
-      )];
+      return [
+        ...new Set(this.favorites.map((item) => item.category).filter((category) => category)),
+      ];
     },
 
     recommendedProducts() {
       const favoriteIds = this.favorites.map((item) => item.id);
 
-      const notFavoritedProducts = this.products.filter(
-        (item) => !favoriteIds.includes(item.id),
-      );
+      const notFavoritedProducts = this.products.filter((item) => !favoriteIds.includes(item.id));
 
       if (!notFavoritedProducts.length) {
         return [];
@@ -262,7 +237,7 @@ export default {
   },
   methods: {
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
@@ -277,14 +252,8 @@ export default {
         .then((res) => {
           this.products = res.data.products || [];
         })
-        .catch((error) => {
-          console.error('取得推薦料理失敗:', error);
-
-          this.pushToast(
-            '取得推薦料理失敗',
-            '請稍後再試，或重新整理頁面。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('取得推薦料理失敗', '請稍後再試，或重新整理頁面。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -297,7 +266,7 @@ export default {
 
     saveFavorites() {
       localStorage.setItem('favoriteFoods', JSON.stringify(this.favorites));
-      window.dispatchEvent(new Event('favorites-updated'));
+      emitter.emit('favorites-updated');
     },
 
     removeFavorite(id) {
@@ -307,11 +276,55 @@ export default {
       this.favorites = this.favorites.filter((item) => item.id !== id);
       this.saveFavorites();
 
-      this.pushToast(
-        '已移除我的最愛',
-        `${title} 已從收藏清單移除。`,
-        'warning',
-      );
+      this.pushToast('已移除我的最愛', `${title} 已從收藏清單移除。`, 'warning');
+    },
+
+    addToCart(item) {
+      if (!item || !item.id) {
+        this.pushToast(
+          '加入購物車失敗',
+          '找不到料理資料，請稍後再試。',
+          'danger',
+        );
+        return;
+      }
+
+      const data = {
+        product_id: item.id,
+        qty: 1,
+      };
+
+      this.isLoading = true;
+
+      this.$http
+        .post(`${VUE_APP_API}/api/${VUE_APP_PATH}/cart`, { data })
+        .then((res) => {
+          if (res.data.success) {
+            emitter.emit('cart-updated');
+
+            this.pushToast(
+              '已加入購物車',
+              `已成功加入 1 ${item.unit || '份'} ${item.title || '餐點'}。`,
+              'success',
+            );
+          } else {
+            this.pushToast(
+              '加入購物車失敗',
+              res.data.message || '請稍後再試。',
+              'danger',
+            );
+          }
+        })
+        .catch(() => {
+          this.pushToast(
+            '加入購物車失敗',
+            '請確認網路連線或稍後再試。',
+            'danger',
+          );
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
 
     toggleFavorite(item) {
@@ -321,11 +334,7 @@ export default {
         this.favorites.push(item);
         this.saveFavorites();
 
-        this.pushToast(
-          '已加入我的最愛',
-          `${item.title || '料理'} 已加入收藏清單。`,
-          'success',
-        );
+        this.pushToast('已加入我的最愛', `${item.title || '料理'} 已加入收藏清單。`, 'success');
       } else {
         this.removeFavorite(item.id);
       }
@@ -349,10 +358,10 @@ export default {
   },
   mounted() {
     this.getProducts();
-    window.addEventListener('favorites-updated', this.syncFavorites);
+    emitter.on('favorites-updated', this.syncFavorites);
   },
   beforeUnmount() {
-    window.removeEventListener('favorites-updated', this.syncFavorites);
+    emitter.off('favorites-updated', this.syncFavorites);
   },
 };
 </script>
@@ -368,9 +377,7 @@ export default {
 .favorite-hero {
   padding: 40px;
   border-radius: 30px;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)),
-    #ffffff;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)), #ffffff;
   border: 1px solid #f1d8ca;
   box-shadow: 0 18px 45px rgba(120, 54, 28, 0.1);
 }
@@ -405,7 +412,9 @@ export default {
   background: #ffffff;
   border: 1px solid #f1d8ca;
   box-shadow: 0 16px 38px rgba(120, 54, 28, 0.09);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .food-card:hover {
@@ -471,7 +480,33 @@ export default {
   background: #fff8f3;
   border: 1px dashed #e5c9b8;
 }
+.favorite-actions,
+.recommend-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
 
+.favorite-actions .btn,
+.recommend-actions .btn {
+  min-height: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
+  .favorite-actions,
+  .recommend-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .favorite-actions .btn,
+  .recommend-actions .btn {
+    width: 100%;
+  }
+}
 @media (max-width: 768px) {
   .favorite-hero {
     padding: 28px 22px;
@@ -491,6 +526,16 @@ export default {
   .recommend-section {
     padding: 24px 18px;
     border-radius: 22px;
+  }
+  .favorite-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+}
+@media (max-width: 576px) {
+  .favorite-actions {
+    grid-template-columns: 1fr;
   }
 }
 </style>

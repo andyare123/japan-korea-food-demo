@@ -6,7 +6,7 @@ module.exports = {
     es6: true,
   },
   extends: [
-    'plugin:vue/essential',
+    'plugin:vue/vue3-essential',
     'airbnb-base',
   ],
   parserOptions: {
@@ -15,6 +15,5 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 'off',
     'import/no-unresolved': 'off',
-    'eol-last': 'off',
   },
 };

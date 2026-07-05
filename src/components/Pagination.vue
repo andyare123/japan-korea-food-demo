@@ -1,11 +1,7 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-      <li
-        class="page-item"
-        :class="{ disabled: !pages.has_pre }"
-      >
+      <li class="page-item" :class="{ disabled: !pages.has_pre }">
         <a
           class="page-link"
           href="#"
@@ -22,19 +18,12 @@
         class="page-item"
         :class="{ active: page === pages.current_page }"
       >
-        <a
-          class="page-link"
-          href="#"
-          @click.prevent="updatePage(page)"
-        >
+        <a class="page-link" href="#" @click.prevent="updatePage(page)">
           {{ page }}
         </a>
       </li>
 
-      <li
-        class="page-item"
-        :class="{ disabled: !pages.has_next }"
-      >
+      <li class="page-item" :class="{ disabled: !pages.has_next }">
         <a
           class="page-link"
           href="#"

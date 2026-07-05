@@ -7,9 +7,7 @@
           <div class="col-lg-6">
             <span class="hero-badge">ABOUT WAKAN DINING</span>
 
-            <h1 class="fw-bold mt-3 mb-4">
-              關於和韓食堂
-            </h1>
+            <h1 class="fw-bold mt-3 mb-4">關於和韓食堂</h1>
 
             <p class="hero-text mb-4">
               和韓食堂是一個專為日式與韓式料理打造的線上訂餐平台，
@@ -18,12 +16,12 @@
             </p>
 
             <div class="hero-actions">
-              <router-link to="/products" class="btn btn-danger btn-lg">
+              <router-link to="/products" class="btn btn-brand btn-lg">
                 立即瀏覽料理
                 <i class="bi bi-arrow-right ms-1"></i>
               </router-link>
 
-              <router-link to="/favorites" class="btn btn-outline-dark btn-lg">
+              <router-link to="/favorites" class="btn btn-outline-brand btn-lg">
                 查看我的最愛
               </router-link>
             </div>
@@ -32,14 +30,6 @@
           <div class="col-lg-6">
             <div class="hero-image-card">
               <div class="hero-image"></div>
-
-              <div class="floating-card">
-                <i class="bi bi-stars"></i>
-                <div>
-                  <strong>日韓料理精選平台</strong>
-                  <span>快速點餐・收藏料理・安心付款</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -50,11 +40,7 @@
     <section class="stats-section">
       <div class="container">
         <div class="row g-4">
-          <div
-            v-for="item in stats"
-            :key="item.title"
-            class="col-md-4"
-          >
+          <div v-for="item in stats" :key="item.title" class="col-md-4">
             <div class="stat-card">
               <strong>{{ item.value }}</strong>
               <span>{{ item.title }}</span>
@@ -71,17 +57,11 @@
         <div class="section-title text-center mb-5">
           <span>OUR VALUE</span>
           <h2 class="fw-bold mt-2">我們重視的，不只是餐點</h2>
-          <p class="text-muted mb-0">
-            從料理選擇到訂單完成，我們希望每一步都簡單、清楚又安心。
-          </p>
+          <p class="text-muted mb-0">從料理選擇到訂單完成，我們希望每一步都簡單、清楚又安心。</p>
         </div>
 
         <div class="row g-4">
-          <div
-            v-for="feature in features"
-            :key="feature.title"
-            class="col-md-6 col-lg-3"
-          >
+          <div v-for="feature in features" :key="feature.title" class="col-md-6 col-lg-3">
             <div class="feature-card">
               <div class="feature-icon">
                 <i :class="feature.icon"></i>
@@ -107,27 +87,19 @@
           <div class="col-lg-5">
             <span class="section-label">PLATFORM SERVICE</span>
 
-            <h2 class="fw-bold mt-3 mb-4">
-              打造更順暢的線上點餐體驗
-            </h2>
+            <h2 class="fw-bold mt-3 mb-4">打造更順暢的線上點餐體驗</h2>
 
             <p class="text-muted service-text">
               和韓食堂整合料理瀏覽、我的最愛、購物車、優惠券、付款確認與訂單查詢，
               讓顧客不用在複雜流程中來回切換，就能完成完整訂餐流程。
             </p>
 
-            <router-link to="/products" class="btn btn-danger mt-3">
-              開始點餐
-            </router-link>
+            <router-link to="/products" class="btn btn-danger mt-3"> 開始點餐 </router-link>
           </div>
 
           <div class="col-lg-7">
             <div class="process-list">
-              <div
-                v-for="(step, index) in process"
-                :key="step.title"
-                class="process-item"
-              >
+              <div v-for="(step, index) in process" :key="step.title" class="process-item">
                 <div class="process-number">
                   {{ index + 1 }}
                 </div>
@@ -155,9 +127,7 @@
           <div>
             <span class="section-label">OUR PROMISE</span>
 
-            <h2 class="fw-bold mt-3 mb-3">
-              用心整理每一道料理，讓每一次點餐都更安心
-            </h2>
+            <h2 class="fw-bold mt-3 mb-3">用心整理每一道料理，讓每一次點餐都更安心</h2>
 
             <p class="mb-0">
               我們希望讓日式與韓式料理不只是選項，而是一種簡單、快速、愉快的日常享受。
@@ -165,9 +135,7 @@
             </p>
           </div>
 
-          <router-link to="/products" class="btn btn-light btn-lg">
-            前往日韓料理
-          </router-link>
+          <router-link to="/products" class="btn btn-light btn-lg"> 前往日韓料理 </router-link>
         </div>
       </div>
     </section>
@@ -303,47 +271,7 @@ export default {
   border-radius: 26px;
   background:
     linear-gradient(180deg, rgba(45, 32, 26, 0.05), rgba(45, 32, 26, 0.28)),
-    url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200') center/cover;
-}
-
-.floating-card {
-  position: absolute;
-  left: -18px;
-  bottom: 34px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  max-width: 320px;
-  padding: 16px 18px;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 18px 44px rgba(60, 40, 30, 0.2);
-}
-
-.floating-card i {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  background: #b23a2e;
-  font-size: 22px;
-}
-
-.floating-card strong,
-.floating-card span {
-  display: block;
-}
-
-.floating-card strong {
-  color: #2d201a;
-}
-
-.floating-card span {
-  color: #777;
-  font-size: 14px;
+    url("https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200") center/cover;
 }
 
 .stats-section {
@@ -397,7 +325,9 @@ export default {
   border-radius: 28px;
   background: #fffaf6;
   border: 1px solid #f1d8ca;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .feature-card:hover {
@@ -475,9 +405,7 @@ export default {
   padding: 44px;
   border-radius: 32px;
   color: #ffffff;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.96), rgba(45, 32, 26, 0.96)),
-    #b23a2e;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.96), rgba(45, 32, 26, 0.96)), #b23a2e;
   box-shadow: 0 24px 60px rgba(120, 54, 28, 0.18);
 }
 
@@ -500,25 +428,6 @@ export default {
   border-radius: 999px;
 }
 
-.btn-danger {
-  background: #b23a2e;
-  border-color: #b23a2e;
-}
-
-.btn-danger:hover {
-  background: #982f25;
-  border-color: #982f25;
-}
-
-.btn-outline-dark {
-  border-color: #2d201a;
-  color: #2d201a;
-}
-
-.btn-outline-dark:hover {
-  background: #2d201a;
-  border-color: #2d201a;
-}
 *,
 *::before,
 *::after {
@@ -531,18 +440,37 @@ export default {
   overflow-x: hidden;
 }
 
-.about-page .container,
-.about-page .row,
-.about-page [class*="col-"] {
-  max-width: 100%;
-}
-
 .hero-image-card,
 .promise-card,
 .stat-card,
 .feature-card,
 .process-item {
   max-width: 100%;
+}
+
+.about-page .container {
+  max-width: 1180px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+@media (min-width: 1200px) {
+  .about-page .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .about-page .container {
+    max-width: 1180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page .container {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -581,22 +509,6 @@ export default {
     border-radius: 18px;
   }
 
-  .floating-card {
-    position: static;
-    width: 100%;
-    max-width: 100%;
-    margin-top: 12px;
-    padding: 14px;
-    border-radius: 18px;
-  }
-
-  .floating-card i {
-    flex: 0 0 auto;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-  }
-
   .stat-card,
   .feature-card,
   .process-item {
@@ -630,13 +542,6 @@ export default {
     min-height: 340px;
   }
 
-  .floating-card {
-    left: 24px;
-    right: 24px;
-    bottom: 24px;
-    max-width: none;
-  }
-
   .promise-card {
     flex-direction: column;
     align-items: flex-start;
@@ -662,11 +567,6 @@ export default {
 
   .hero-image {
     min-height: 280px;
-  }
-
-  .floating-card {
-    position: static;
-    margin-top: 14px;
   }
 
   .brand-section,

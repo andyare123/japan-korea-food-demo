@@ -10,13 +10,14 @@
 </template>
 
 <script>
-import Toast from './Toast.vue';
+import Toast from "./Toast.vue";
+
+import emitter from "../methods/emitter";
 
 export default {
   components: {
     Toast,
   },
-  inject: ['emitter'],
   data() {
     return {
       messages: [],
@@ -28,9 +29,9 @@ export default {
 
       this.messages.push({
         id,
-        style: message.style || 'success',
-        title: message.title || '',
-        content: message.content || '',
+        style: message.style || "success",
+        title: message.title || "",
+        content: message.content || "",
       });
 
       setTimeout(() => {
@@ -43,10 +44,10 @@ export default {
     },
   },
   mounted() {
-    this.emitter.on('push-message', this.pushMessage);
+    emitter.on("push-message", this.pushMessage);
   },
   beforeUnmount() {
-    this.emitter.off('push-message', this.pushMessage);
+    emitter.off("push-message", this.pushMessage);
   },
 };
 </script>

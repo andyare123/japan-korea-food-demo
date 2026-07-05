@@ -4,10 +4,7 @@
       <div class="footer-main">
         <div class="footer-brand">
           <h3 class="fw-bold mb-3">和韓食堂</h3>
-          <p class="mb-0">
-            嚴選日式職人料理與韓式人氣美食，讓你不用出門，
-            也能快速享受美味餐點。
-          </p>
+          <p class="mb-0">嚴選日式職人料理與韓式人氣美食，讓你不用出門， 也能快速享受美味餐點。</p>
         </div>
 
         <div class="footer-links">
@@ -59,9 +56,7 @@
   margin-top: 0;
   padding: 64px 0 24px;
   color: #fff;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.96), rgba(45, 32, 26, 0.98)),
-    #2d201a;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.96), rgba(45, 32, 26, 0.98)), #2d201a;
 }
 
 .footer-main {

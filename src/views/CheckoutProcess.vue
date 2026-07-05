@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <Loading :active="isLoading"></Loading>
 
@@ -49,18 +48,12 @@
             <div>
               <span class="small text-danger fw-bold">STEP 1</span>
               <h4 class="fw-bold mb-1">確認購物車餐點</h4>
-              <p class="text-muted mb-0">
-                請確認餐點、數量與金額是否正確，確認後再進入下一步。
-              </p>
+              <p class="text-muted mb-0">請確認餐點、數量與金額是否正確，確認後再進入下一步。</p>
             </div>
           </div>
 
           <div v-if="cart.carts && cart.carts.length">
-            <div
-              class="confirm-item"
-              v-for="item in cart.carts"
-              :key="item.id"
-            >
+            <div class="confirm-item" v-for="item in cart.carts" :key="item.id">
               <div
                 class="confirm-img"
                 :style="{ backgroundImage: `url(${item.product.imageUrl || defaultImage})` }"
@@ -72,7 +65,7 @@
                 </h6>
 
                 <p class="text-muted small mb-2">
-                  {{ item.product.description || item.product.content || '日韓人氣料理。' }}
+                  {{ item.product.description || item.product.content || "日韓人氣料理。" }}
                 </p>
 
                 <div class="input-group input-group-sm confirm-qty">
@@ -83,9 +76,9 @@
                     :disabled="item.id === status.loadingItem"
                     @change="updateCart(item)"
                     v-model.number="item.qty"
-                  >
+                  />
                   <span class="input-group-text">
-                    {{ item.product.unit || '份' }}
+                    {{ item.product.unit || "份" }}
                   </span>
                 </div>
               </div>
@@ -120,7 +113,7 @@
                 <strong>{{ $filters.currency(cart.final_total) }}</strong>
               </div>
 
-              <hr>
+              <hr />
 
               <div class="d-flex justify-content-between total-line">
                 <span>應付總額</span>
@@ -134,11 +127,7 @@
                 返回購物車
               </router-link>
 
-              <button
-                type="button"
-                class="btn btn-danger btn-lg"
-                @click="nextStep"
-              >
+              <button type="button" class="btn btn-danger btn-lg" @click="nextStep">
                 下一步，填寫訂購資料
                 <i class="bi bi-arrow-right ms-1"></i>
               </button>
@@ -148,12 +137,8 @@
           <div v-else class="empty-cart">
             <i class="bi bi-bag-x"></i>
             <h5 class="fw-bold mt-3 mb-2">購物車目前沒有餐點</h5>
-            <p class="text-muted mb-4">
-              請先加入日韓料理後再進行結帳。
-            </p>
-            <router-link to="/products" class="btn btn-danger">
-              前往挑選料理
-            </router-link>
+            <p class="text-muted mb-4">請先加入日韓料理後再進行結帳。</p>
+            <router-link to="/products" class="btn btn-danger"> 前往挑選料理 </router-link>
           </div>
         </div>
 
@@ -163,16 +148,10 @@
             <div>
               <span class="small text-danger fw-bold">STEP 2</span>
               <h4 class="fw-bold mb-1">填寫訂購資料</h4>
-              <p class="text-muted mb-0">
-                請填寫正確的聯絡資訊，方便後續通知與配送。
-              </p>
+              <p class="text-muted mb-0">請填寫正確的聯絡資訊，方便後續通知與配送。</p>
             </div>
           </div>
-          <Form
-            v-slot="{ errors, meta, validate }"
-            :validate-on-mount="true"
-            @submit.prevent
-          >
+          <Form v-slot="{ errors, validate }" :validate-on-mount="true" @submit.prevent>
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="email" class="form-label fw-bold">
@@ -239,9 +218,7 @@
 
                 <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
 
-                <small class="text-muted d-block mt-1">
-                  請輸入 09 開頭的 10 碼手機號碼。
-                </small>
+                <small class="text-muted d-block mt-1"> 請輸入 09 開頭的 10 碼手機號碼。 </small>
               </div>
 
               <div class="col-md-6">
@@ -279,32 +256,21 @@
               </div>
             </div>
 
-            <div class="form-checkout-alert mt-4" v-if="!meta.valid">
-              <i class="bi bi-exclamation-circle me-1"></i>
-              請確認以下欄位：
-
-              <ul class="mb-0 mt-2 ps-4">
-                <li v-for="(message, field) in errors" :key="field">
-                  {{ field }}：{{ message }}
-                </li>
-              </ul>
-            </div>
-
             <div class="d-flex justify-content-between mt-4">
-              <button
-                type="button"
-                class="btn btn-outline-secondary btn-lg"
-                @click="prevStep"
-              >
+              <button type="button" class="btn btn-outline-secondary btn-lg" @click="prevStep">
                 <i class="bi bi-arrow-left me-1"></i>
                 上一步
               </button>
 
               <button
                 type="button"
-                class="btn btn-danger btn-lg"
-                :disabled="isLoading || !meta.valid"
-                @click="validate().then((result) => { if (result.valid) nextStep(); })"
+                class="btn btn-brand btn-lg"
+                :disabled="isLoading"
+                @click="
+                  validate().then((result) => {
+                    if (result.valid) nextStep();
+                  })
+                "
               >
                 下一步，確認訂單
                 <i class="bi bi-arrow-right ms-1"></i>
@@ -331,15 +297,11 @@
               餐點明細
             </h5>
 
-            <div
-              class="final-item"
-              v-for="item in cart.carts"
-              :key="item.id"
-            >
+            <div class="final-item" v-for="item in cart.carts" :key="item.id">
               <div>
                 <strong>{{ item.product.title }}</strong>
                 <div class="text-muted small">
-                  數量：{{ item.qty }} {{ item.product.unit || '份' }}
+                  數量：{{ item.qty }} {{ item.product.unit || "份" }}
                 </div>
               </div>
 
@@ -362,7 +324,7 @@
                 <strong>{{ $filters.currency(cart.final_total) }}</strong>
               </div>
 
-              <hr>
+              <hr />
 
               <div class="d-flex justify-content-between total-line">
                 <span>應付總額</span>
@@ -400,17 +362,13 @@
 
               <div class="full">
                 <span>備註</span>
-                <strong>{{ form.message || '無備註' }}</strong>
+                <strong>{{ form.message || "無備註" }}</strong>
               </div>
             </div>
           </div>
 
           <div class="d-flex justify-content-between mt-4">
-            <button
-              type="button"
-              class="btn btn-outline-secondary btn-lg"
-              @click="prevStep"
-            >
+            <button type="button" class="btn btn-outline-brand btn-lg" @click="prevStep">
               <i class="bi bi-arrow-left me-1"></i>
               上一步修改
             </button>
@@ -421,10 +379,7 @@
               :disabled="isLoading || !cart.carts.length"
               @click="createOrder"
             >
-              <span
-                v-if="isLoading"
-                class="spinner-grow spinner-grow-sm me-1"
-              ></span>
+              <span v-if="isLoading" class="spinner-grow spinner-grow-sm me-1"></span>
               建立訂單並前往付款
             </button>
           </div>
@@ -435,8 +390,9 @@
 </template>
 
 <script>
+import emitter from '../methods/emitter';
+
 export default {
-  inject: ['emitter'],
   data() {
     return {
       isLoading: false,
@@ -463,7 +419,7 @@ export default {
   },
   methods: {
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
@@ -475,7 +431,8 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((response) => {
           this.cart = response.data.data || {
             carts: [],
@@ -483,14 +440,8 @@ export default {
             final_total: 0,
           };
         })
-        .catch((error) => {
-          console.error('取得購物車失敗:', error);
-
-          this.pushToast(
-            '取得購物車失敗',
-            '請稍後再試，或重新整理頁面。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('取得購物車失敗', '請稍後再試，或重新整理頁面。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -498,15 +449,10 @@ export default {
     },
 
     updateCart(item) {
-      if (item.qty < 1) {
-        // eslint-disable-next-line no-param-reassign
-        item.qty = 1;
+      const fixedQty = Number(item.qty) < 1 ? 1 : Number(item.qty);
 
-        this.pushToast(
-          '數量錯誤',
-          '餐點數量至少需要 1 份。',
-          'warning',
-        );
+      if (Number(item.qty) < 1) {
+        this.pushToast('數量錯誤', '餐點數量至少需要 1 份。', 'warning');
       }
 
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
@@ -516,13 +462,12 @@ export default {
 
       const cart = {
         product_id: item.product_id,
-        qty: item.qty,
+        qty: fixedQty,
       };
 
-      this.$http.put(url, { data: cart })
+      this.$http
+        .put(url, { data: cart })
         .then((res) => {
-          this.$httpMessageState(res, '更新購物車');
-
           if (res.data.success) {
             this.pushToast(
               '更新購物車成功',
@@ -531,23 +476,13 @@ export default {
             );
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '更新購物車失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('更新購物車失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('更新購物車失敗:', error);
-
-          this.pushToast(
-            '更新購物車失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('更新購物車失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -561,35 +496,20 @@ export default {
       this.status.loadingItem = id;
       this.isLoading = true;
 
-      this.$http.delete(url)
+      this.$http
+        .delete(url)
         .then((response) => {
-          this.$httpMessageState(response, '移除購物車品項');
-
           if (response.data.success) {
-            this.pushToast(
-              '已移除餐點',
-              '餐點已從購物車移除。',
-              'success',
-            );
+            this.pushToast('已移除餐點', '餐點已從購物車移除。', 'success');
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '移除餐點失敗',
-              response.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('移除餐點失敗', response.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('移除購物車品項失敗:', error);
-
-          this.pushToast(
-            '移除餐點失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('移除餐點失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -599,11 +519,7 @@ export default {
 
     nextStep() {
       if (this.checkoutStep === 1 && !this.cart.carts.length) {
-        this.pushToast(
-          '購物車目前沒有餐點',
-          '請先加入餐點後再進入下一步。',
-          'warning',
-        );
+        this.pushToast('購物車目前沒有餐點', '請先加入餐點後再進入下一步。', 'warning');
         return;
       }
 
@@ -630,11 +546,7 @@ export default {
 
     createOrder() {
       if (!this.cart.carts.length) {
-        this.pushToast(
-          '購物車目前沒有餐點',
-          '請先加入餐點後再建立訂單。',
-          'warning',
-        );
+        this.pushToast('購物車目前沒有餐點', '請先加入餐點後再建立訂單。', 'warning');
 
         this.checkoutStep = 1;
         return;
@@ -645,11 +557,7 @@ export default {
       } = this.form.user;
 
       if (!name || !email || !tel || !address) {
-        this.pushToast(
-          '請先填寫完整訂購資料',
-          '姓名、Email、電話與地址皆為必填。',
-          'warning',
-        );
+        this.pushToast('請先填寫完整訂購資料', '姓名、Email、電話與地址皆為必填。', 'warning');
 
         this.checkoutStep = 2;
         return;
@@ -660,42 +568,31 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.post(url, { data: order })
+      this.$http
+        .post(url, { data: order })
         .then((res) => {
           if (res.data.success) {
             const { orderId } = res.data;
 
-            this.pushToast(
-              '訂單建立成功',
-              '即將前往付款頁面。',
-              'success',
-            );
+            this.pushToast('訂單建立成功', '即將前往付款頁面。', 'success');
 
             localStorage.removeItem('orderDisplayCleared');
 
-            window.dispatchEvent(new Event('cart-updated'));
-            window.dispatchEvent(new Event('orders-display-reset'));
-            window.dispatchEvent(new Event('orders-updated'));
+            emitter.emit('cart-updated');
+            emitter.emit('orders-display-reset', {
+              orderId,
+            });
+            emitter.emit('orders-updated');
 
             setTimeout(() => {
               this.$router.push(`/checkout/${orderId}`);
             }, 800);
           } else {
-            this.pushToast(
-              '訂單建立失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('訂單建立失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('建立訂單失敗:', error);
-
-          this.pushToast(
-            '訂單建立失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('訂單建立失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -721,9 +618,7 @@ export default {
   overflow: hidden;
   padding: 44px;
   border-radius: 30px;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)),
-    #ffffff;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)), #ffffff;
   border: 1px solid #f1d8ca;
   box-shadow: 0 18px 45px rgba(110, 58, 30, 0.12);
 }
@@ -922,15 +817,6 @@ export default {
   margin-bottom: 10px;
   font-size: 42px;
   color: #c9a18b;
-}
-.form-checkout-alert {
-  padding: 14px 18px;
-  border-radius: 16px;
-  color: #b23a2e;
-  background: #fff0e7;
-  border: 1px
-  solid #f1d8ca;
-  font-weight: 700;
 }
 @media (max-width: 768px) {
   .page-hero {

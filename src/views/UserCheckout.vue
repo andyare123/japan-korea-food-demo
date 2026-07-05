@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <Loading :active="isLoading"></Loading>
 
@@ -7,9 +6,7 @@
       <!-- 頁首 -->
       <div class="pay-hero mb-5">
         <span class="pay-badge">PAYMENT CONFIRMATION</span>
-        <h1 class="fw-bold mt-3 mb-3">
-          確認付款
-        </h1>
+        <h1 class="fw-bold mt-3 mb-3">確認付款</h1>
         <p class="text-muted mb-0">
           請再次確認餐點明細、訂購資料與付款狀態，確認無誤後即可完成付款。
         </p>
@@ -23,25 +20,16 @@
               <div>
                 <span class="section-label">ORDER ITEMS</span>
                 <h4 class="fw-bold mb-1">餐點明細</h4>
-                <p class="text-muted mb-0 small">
-                  以下為本次訂單的餐點與數量。
-                </p>
+                <p class="text-muted mb-0 small">以下為本次訂單的餐點與數量。</p>
               </div>
 
-              <span
-                class="status-pill"
-                :class="order.is_paid ? 'paid' : 'unpaid'"
-              >
-                {{ order.is_paid ? '付款完成' : '尚未付款' }}
+              <span class="status-pill" :class="order.is_paid ? 'paid' : 'unpaid'">
+                {{ order.is_paid ? "付款完成" : "尚未付款" }}
               </span>
             </div>
 
             <div v-if="orderProducts.length">
-              <div
-                v-for="item in orderProducts"
-                :key="item.id"
-                class="order-item"
-              >
+              <div v-for="item in orderProducts" :key="item.id" class="order-item">
                 <div
                   class="order-img"
                   :style="{ backgroundImage: `url(${item.product?.imageUrl || defaultImage})` }"
@@ -49,15 +37,15 @@
 
                 <div class="order-info">
                   <span class="food-category">
-                    {{ item.product?.category || '精選料理' }}
+                    {{ item.product?.category || "精選料理" }}
                   </span>
 
                   <h5 class="fw-bold mt-2 mb-1">
-                    {{ item.product?.title || '未命名料理' }}
+                    {{ item.product?.title || "未命名料理" }}
                   </h5>
 
                   <p class="text-muted small mb-0">
-                    數量：{{ item.qty }} {{ item.product?.unit || '份' }}
+                    數量：{{ item.qty }} {{ item.product?.unit || "份" }}
                   </p>
                 </div>
 
@@ -73,9 +61,7 @@
             <div v-else class="empty-box text-center">
               <div class="display-5 mb-3">🍱</div>
               <h5 class="fw-bold">目前沒有訂單餐點</h5>
-              <p class="text-muted mb-0">
-                請返回購物車重新建立訂單。
-              </p>
+              <p class="text-muted mb-0">請返回購物車重新建立訂單。</p>
             </div>
           </div>
 
@@ -85,37 +71,35 @@
               <div>
                 <span class="section-label">CUSTOMER INFO</span>
                 <h4 class="fw-bold mb-1">訂購資料</h4>
-                <p class="text-muted mb-0 small">
-                  請確認聯絡資訊是否正確。
-                </p>
+                <p class="text-muted mb-0 small">請確認聯絡資訊是否正確。</p>
               </div>
             </div>
 
             <div class="info-grid">
               <div class="info-item">
                 <span>Email</span>
-                <strong>{{ order.user.email || '未填寫' }}</strong>
+                <strong>{{ order.user.email || "未填寫" }}</strong>
               </div>
 
               <div class="info-item">
                 <span>姓名</span>
-                <strong>{{ order.user.name || '未填寫' }}</strong>
+                <strong>{{ order.user.name || "未填寫" }}</strong>
               </div>
 
               <div class="info-item">
                 <span>收件人電話</span>
-                <strong>{{ order.user.tel || '未填寫' }}</strong>
+                <strong>{{ order.user.tel || "未填寫" }}</strong>
               </div>
 
               <div class="info-item">
                 <span>收件人地址</span>
-                <strong>{{ order.user.address || '未填寫' }}</strong>
+                <strong>{{ order.user.address || "未填寫" }}</strong>
               </div>
 
               <div class="info-item full">
                 <span>付款狀態</span>
                 <strong :class="order.is_paid ? 'text-success' : 'text-danger'">
-                  {{ order.is_paid ? '付款完成' : '尚未付款' }}
+                  {{ order.is_paid ? "付款完成" : "尚未付款" }}
                 </strong>
               </div>
             </div>
@@ -127,9 +111,7 @@
           <form class="summary-card sticky-lg-top" @submit.prevent="payOrder">
             <span class="section-label">PAYMENT</span>
 
-            <h3 class="fw-bold mt-2 mb-3">
-              付款摘要
-            </h3>
+            <h3 class="fw-bold mt-2 mb-3">付款摘要</h3>
 
             <div class="summary-line">
               <span>訂單編號</span>
@@ -144,11 +126,11 @@
             <div class="summary-line">
               <span>付款狀態</span>
               <strong :class="order.is_paid ? 'text-success' : 'text-danger'">
-                {{ order.is_paid ? '付款完成' : '尚未付款' }}
+                {{ order.is_paid ? "付款完成" : "尚未付款" }}
               </strong>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="summary-total">
               <span>應付總額</span>
@@ -160,9 +142,7 @@
                 <i class="bi bi-shield-check me-1"></i>
                 付款提醒
               </h6>
-              <p class="mb-0">
-                確認付款後，訂單狀態會更新為付款完成。
-              </p>
+              <p class="mb-0">確認付款後，訂單狀態會更新為付款完成。</p>
             </div>
 
             <div class="d-grid gap-2 mt-4">
@@ -172,26 +152,16 @@
                 type="submit"
                 :disabled="isLoading || !orderProducts.length"
               >
-                <span
-                  v-if="isLoading"
-                  class="spinner-grow spinner-grow-sm me-1"
-                ></span>
+                <span v-if="isLoading" class="spinner-grow spinner-grow-sm me-1"></span>
                 確認付款
               </button>
 
-              <button
-                v-else
-                class="btn btn-success btn-lg"
-                type="button"
-                disabled
-              >
+              <button v-else class="btn btn-success btn-lg" type="button" disabled>
                 <i class="bi bi-check-circle me-1"></i>
                 已完成付款
               </button>
 
-              <router-link to="/products" class="btn btn-outline-dark">
-                繼續選購料理
-              </router-link>
+              <router-link to="/products" class="btn btn-outline-dark"> 繼續選購料理 </router-link>
 
               <router-link to="/user/cart" class="btn btn-outline-secondary">
                 返回購物車
@@ -204,20 +174,17 @@
       <div v-else-if="!isLoading" class="empty-box text-center">
         <div class="display-5 mb-3">🧾</div>
         <h4 class="fw-bold">找不到訂單編號</h4>
-        <p class="text-muted">
-          請先從購物車建立訂單，再前往付款頁。
-        </p>
-        <router-link to="/user/cart" class="btn btn-danger">
-          返回購物車
-        </router-link>
+        <p class="text-muted">請先從購物車建立訂單，再前往付款頁。</p>
+        <router-link to="/user/cart" class="btn btn-danger"> 返回購物車 </router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import emitter from '../methods/emitter';
+
 export default {
-  inject: ['emitter'],
   data() {
     return {
       order: {
@@ -245,15 +212,12 @@ export default {
     },
 
     orderProductCount() {
-      return this.orderProducts.reduce(
-        (total, item) => total + Number(item.qty || 0),
-        0,
-      );
+      return this.orderProducts.reduce((total, item) => total + Number(item.qty || 0), 0);
     },
   },
   methods: {
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
@@ -262,11 +226,7 @@ export default {
 
     getOrder() {
       if (!this.orderId) {
-        this.pushToast(
-          '找不到訂單編號',
-          '請先從購物車建立訂單，再前往付款頁。',
-          'warning',
-        );
+        this.pushToast('找不到訂單編號', '請先從購物車建立訂單，再前往付款頁。', 'warning');
 
         this.$router.push('/user/cart');
         return;
@@ -276,7 +236,8 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((res) => {
           if (res.data.success) {
             this.order = {
@@ -296,14 +257,8 @@ export default {
             this.$router.push('/user/cart');
           }
         })
-        .catch((error) => {
-          console.error('取得訂單失敗:', error);
-
-          this.pushToast(
-            '取得訂單失敗',
-            '請稍後再試，或重新從購物車建立訂單。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('取得訂單失敗', '請稍後再試，或重新從購物車建立訂單。', 'danger');
 
           this.$router.push('/user/cart');
         })
@@ -321,30 +276,25 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.post(url)
+      this.$http
+        .post(url)
         .then((res) => {
           this.$httpMessageState(res, '付款');
 
           if (res.data.success) {
             this.order.is_paid = true;
 
-            this.pushToast(
-              '付款完成',
-              '訂單已成功付款，即將前往訂單查詢。',
-              'success',
-            );
+            this.pushToast('付款完成', '訂單已成功付款，即將前往訂單查詢。', 'success');
 
             localStorage.removeItem('orderDisplayCleared');
             localStorage.setItem('latestPaidOrderId', this.orderId);
 
-            window.dispatchEvent(new CustomEvent('orders-display-reset', {
-              detail: {
-                orderId: this.orderId,
-              },
-            }));
+            emitter.emit('orders-display-reset', {
+              orderId: this.orderId,
+            });
 
-            window.dispatchEvent(new Event('orders-updated'));
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('orders-updated');
+            emitter.emit('cart-updated');
 
             setTimeout(() => {
               this.$router.push({
@@ -355,21 +305,11 @@ export default {
               });
             }, 1500);
           } else {
-            this.pushToast(
-              '付款失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('付款失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('付款失敗:', error);
-
-          this.pushToast(
-            '付款失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('付款失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -394,9 +334,7 @@ export default {
 .pay-hero {
   padding: 42px;
   border-radius: 30px;
-  background:
-    linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)),
-    #ffffff;
+  background: linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)), #ffffff;
   border: 1px solid #f1d8ca;
   box-shadow: 0 18px 45px rgba(110, 58, 30, 0.12);
 }

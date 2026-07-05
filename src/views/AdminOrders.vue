@@ -1,6 +1,3 @@
-<!-- eslint-disable vue/no-v-for-template-key -->
-<!-- eslint-disable vue/no-multiple-template-root -->
-<!-- eslint-disable vuejs-accessibility/label-has-for -->
 <template>
   <Loading :active="isLoading"></Loading>
 
@@ -19,7 +16,7 @@
         <div class="d-flex gap-2">
           <button
             type="button"
-            class="btn btn-outline-danger refresh-btn"
+            class="btn btn-outline-brand refresh-btn"
             :disabled="isLoading || isOrderDisplayCleared"
             @click="getOrders(currentPage)"
           >
@@ -29,7 +26,7 @@
 
           <button
             type="button"
-            class="btn btn-danger refresh-btn"
+            class="btn btn-brand refresh-btn"
             :disabled="isLoading || isOrderDisplayCleared"
             @click="clearOrdersDisplay"
           >
@@ -68,9 +65,7 @@
         <div class="orders-card-header">
           <div>
             <h4 class="fw-bold mb-1">訂單列表</h4>
-            <p class="text-muted mb-0 small">
-              可點擊檢視查看完整訂單內容，此頁不提供刪除功能。
-            </p>
+            <p class="text-muted mb-0 small">可點擊檢視查看完整訂單內容，此頁不提供刪除功能。</p>
           </div>
         </div>
 
@@ -95,7 +90,7 @@
               >
                 <td class="order-time">
                   <div class="fw-bold">
-                    {{ item.create_at ? $filters.date(item.create_at) : '未取得時間' }}
+                    {{ item.create_at ? $filters.date(item.create_at) : "未取得時間" }}
                   </div>
                   <small class="text-muted">
                     {{ item.id }}
@@ -105,16 +100,14 @@
                 <td>
                   <div v-if="item.user">
                     <div class="fw-bold">
-                      {{ item.user.email || '未填寫 Email' }}
+                      {{ item.user.email || "未填寫 Email" }}
                     </div>
                     <small class="text-muted">
-                      {{ item.user.name || '未填寫姓名' }}
+                      {{ item.user.name || "未填寫姓名" }}
                     </small>
                   </div>
 
-                  <span v-else class="text-muted">
-                    無用戶資料
-                  </span>
+                  <span v-else class="text-muted"> 無用戶資料 </span>
                 </td>
 
                 <td>
@@ -126,17 +119,14 @@
                     >
                       <span class="product-dot"></span>
                       <span class="product-title">
-                        {{ product.product?.title || '未命名商品' }}
+                        {{ product.product?.title || "未命名商品" }}
                       </span>
                       <span class="product-qty">
-                        x {{ product.qty || 0 }} {{ product.product?.unit || '份' }}
+                        x {{ product.qty || 0 }} {{ product.product?.unit || "份" }}
                       </span>
                     </div>
 
-                    <span
-                      v-if="!getOrderProducts(item.products).length"
-                      class="text-muted"
-                    >
+                    <span v-if="!getOrderProducts(item.products).length" class="text-muted">
                       無商品資料
                     </span>
                   </div>
@@ -150,11 +140,8 @@
 
                 <td class="text-center">
                   <div class="payment-control">
-                    <span
-                      class="payment-badge"
-                      :class="isOrderPaid(item) ? 'paid' : 'unpaid'"
-                    >
-                      {{ isOrderPaid(item) ? '已付款' : '未付款' }}
+                    <span class="payment-badge" :class="isOrderPaid(item) ? 'paid' : 'unpaid'">
+                      {{ isOrderPaid(item) ? "已付款" : "未付款" }}
                     </span>
                   </div>
                 </td>
@@ -163,7 +150,7 @@
                   <div class="btn-group action-group">
                     <button
                       type="button"
-                      class="btn btn-outline-primary btn-sm"
+                      class="btn btn-outline-brand btn-sm"
                       @click="openModal(false, item)"
                     >
                       <i class="bi bi-eye me-1"></i>
@@ -175,35 +162,85 @@
             </tbody>
           </table>
         </div>
+        <div v-if="orderList.length" class="mobile-order-list">
+          <div
+            v-for="item in orderList"
+            :key="`mobile-${item.id}`"
+            class="mobile-order-card"
+            :class="{ unpaid: !isOrderPaid(item) }"
+          >
+            <div class="mobile-order-top">
+              <div>
+                <div class="mobile-order-id">
+                  {{ item.id }}
+                </div>
+                <div class="mobile-order-time">
+                  訂購時間　{{ item.create_at ? $filters.date(item.create_at) : "未取得時間" }}
+                </div>
+              </div>
 
+              <button
+                type="button"
+                class="mobile-order-arrow"
+                aria-label="檢視訂單"
+                @click="openModal(false, item)"
+              >
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+
+            <div class="mobile-order-row">
+              <span>訂購帳戶</span>
+              <strong>{{ item.user?.email || item.user?.name || "未填寫資料" }}</strong>
+            </div>
+
+            <div class="mobile-order-row">
+              <span>總金額</span>
+              <strong>{{ $filters.currency(item.total || 0) }}</strong>
+            </div>
+
+            <div class="mobile-order-row">
+              <span>訂單狀態</span>
+              <strong>{{ isOrderPaid(item) ? "已付款" : "未付款" }}</strong>
+            </div>
+
+            <div class="mobile-order-products">
+              <div
+                v-for="product in getOrderProducts(item.products)"
+                :key="product.id"
+                class="mobile-product-pill"
+              >
+                {{ product.product?.title || "未命名商品" }}
+                x {{ product.qty || 0 }} {{ product.product?.unit || "份" }}
+              </div>
+
+              <span v-if="!getOrderProducts(item.products).length" class="text-muted">
+                無商品資料
+              </span>
+            </div>
+          </div>
+        </div>
         <div v-else class="empty-orders">
           <div class="display-5 mb-3">🧾</div>
           <h5 class="fw-bold">目前沒有訂單資料</h5>
-          <p class="text-muted mb-0">
-            尚未有顧客建立訂單，或目前頁面沒有資料。
-          </p>
+          <p class="text-muted mb-0">尚未有顧客建立訂單，或目前頁面沒有資料。</p>
         </div>
       </div>
 
       <div class="mt-4" v-if="!isOrderDisplayCleared && orderList.length">
-        <Pagination
-          :pages="pagination"
-          @emit-pages="getOrders"
-        ></Pagination>
+        <Pagination :pages="pagination" @emit-pages="getOrders"></Pagination>
       </div>
     </div>
   </div>
 
-  <OrderModal
-    ref="orderModal"
-    :order="tempOrder"
-    @update-order="updatePaid"
-  ></OrderModal>
+  <OrderModal ref="orderModal" :order="tempOrder" @update-order="updatePaid"></OrderModal>
 </template>
 
 <script>
 import OrderModal from '@/components/orderModal.vue';
 import Pagination from '@/components/Pagination.vue';
+
+import emitter from '../methods/emitter';
 
 export default {
   name: 'AdminOrders',
@@ -250,10 +287,12 @@ export default {
   },
   methods: {
     isOrderPaid(order) {
-      return order.is_paid === true
+      return (
+        order.is_paid === true
         || order.is_paid === 1
         || order.is_paid === '1'
-        || order.is_paid === 'true';
+        || order.is_paid === 'true'
+      );
     },
 
     syncLatestPaidOrderId() {
@@ -313,7 +352,8 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((response) => {
           if (response.data.success && response.data.order) {
             const order = {
@@ -332,11 +372,8 @@ export default {
 
           this.orders = {};
           this.pagination = {};
-
-          console.warn('找不到指定訂單：', orderId);
         })
-        .catch((error) => {
-          console.error('取得指定付款訂單失敗:', error);
+        .catch(() => {
           alert('取得指定付款訂單失敗，請稍後再試');
         })
         .finally(() => {
@@ -366,7 +403,8 @@ export default {
         is_paid: item.is_paid,
       };
 
-      this.$http.put(api, { data: paid })
+      this.$http
+        .put(api, { data: paid })
         .then((response) => {
           this.$httpMessageState(response, '更新付款狀態');
 
@@ -376,8 +414,7 @@ export default {
 
           this.getOnlyPaidOrder(item.id);
         })
-        .catch((error) => {
-          console.error('更新付款狀態失敗:', error);
+        .catch(() => {
           alert('更新付款狀態失敗，請稍後再試');
 
           if (this.latestPaidOrderId) {
@@ -398,7 +435,7 @@ export default {
       localStorage.removeItem('latestPaidOrderId');
       localStorage.setItem('orderDisplayCleared', '1');
 
-      window.dispatchEvent(new Event('orders-cleared'));
+      emitter.emit('orders-cleared');
     },
 
     handleOrdersCleared() {
@@ -407,12 +444,11 @@ export default {
       this.latestPaidOrderId = '';
       this.isOrderDisplayCleared = true;
 
-      localStorage.removeItem('latestPaidOrderId');
       localStorage.setItem('orderDisplayCleared', '1');
     },
 
-    handleOrdersDisplayReset(event) {
-      const paidOrderId = event?.detail?.orderId
+    handleOrdersDisplayReset(payload = {}) {
+      const paidOrderId = payload.orderId
         || this.$route.query.orderId
         || localStorage.getItem('latestPaidOrderId')
         || '';
@@ -449,24 +485,22 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('orders-cleared', this.handleOrdersCleared);
-    window.addEventListener('orders-display-reset', this.handleOrdersDisplayReset);
+    emitter.on('orders-cleared', this.handleOrdersCleared);
+    emitter.on('orders-display-reset', this.handleOrdersDisplayReset);
   },
 
   beforeUnmount() {
-    window.removeEventListener('orders-cleared', this.handleOrdersCleared);
-    window.removeEventListener('orders-display-reset', this.handleOrdersDisplayReset);
+    emitter.off('orders-cleared', this.handleOrdersCleared);
+    emitter.off('orders-display-reset', this.handleOrdersDisplayReset);
   },
 };
 </script>
 
 <style scoped>
 .admin-orders-page {
-  min-height: 100vh;
-  padding: 24px;
   background:
     radial-gradient(circle at top left, rgba(220, 53, 69, 0.08), transparent 28%),
-    linear-gradient(180deg, #fff7ef 0%, #ffffff 46%, #fffaf5 100%);
+    linear-gradient(180deg, var(--brand-bg) 0%, #ffffff 46%, var(--brand-bg-soft) 100%);
 }
 
 .admin-hero {
@@ -477,7 +511,7 @@ export default {
   padding: 32px;
   border-radius: 28px;
   background: #ffffff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 16px 42px rgba(120, 54, 28, 0.1);
 }
 
@@ -485,8 +519,8 @@ export default {
   display: inline-block;
   padding: 8px 14px;
   border-radius: 999px;
-  color: #b23a2e;
-  background: #fff0e7;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
   font-size: 13px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -502,13 +536,13 @@ export default {
   padding: 22px 24px;
   border-radius: 22px;
   background: #ffffff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 12px 32px rgba(120, 54, 28, 0.08);
 }
 
 .stat-card span {
   display: block;
-  color: #8a7a70;
+  color: var(--brand-muted);
   font-size: 14px;
   font-weight: 700;
 }
@@ -516,24 +550,24 @@ export default {
 .stat-card strong {
   display: block;
   margin-top: 8px;
-  color: #b23a2e;
+  color: var(--brand-primary);
   font-size: 34px;
   line-height: 1;
 }
 
 .stat-card.paid strong {
-  color: #198754;
+  color: var(--state-success);
 }
 
 .stat-card.unpaid strong {
-  color: #dc3545;
+  color: var(--state-danger);
 }
 
 .orders-card {
   overflow: hidden;
   border-radius: 28px;
   background: #ffffff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 16px 42px rgba(120, 54, 28, 0.1);
 }
 
@@ -542,15 +576,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 26px 30px;
-  border-bottom: 1px solid #f1d8ca;
-  background: #fffaf6;
+  background: var(--brand-bg-soft);
+  border-bottom: 1px solid var(--brand-border);
 }
 
 .admin-order-table thead th {
   padding: 16px 18px;
   color: #6c5b50;
-  background: #fff3ea;
-  border-bottom: 1px solid #f1d8ca;
+  background: var(--brand-primary-light);
+  border-bottom: 1px solid var(--brand-border);
   font-size: 14px;
   white-space: nowrap;
 }
@@ -657,29 +691,159 @@ export default {
   color: #8a7a70;
   background: #fffaf6;
 }
-
+.mobile-order-list {
+  display: none;
+}
 @media (max-width: 991px) {
-  .admin-orders-page {
-    padding: 12px;
+  .main-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 5000;
   }
 
-  .admin-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px;
-    border-radius: 22px;
+  #mainNavbar {
+    position: absolute;
+    top: 100%;
+    left: 12px;
+    right: 12px;
+    z-index: 4999;
+    padding: 14px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid var(--brand-border);
+    box-shadow: 0 18px 45px rgba(80, 40, 20, 0.18);
   }
 
-  .refresh-btn {
+  #mainNavbar:not(.show) {
+    display: none;
+  }
+
+  #mainNavbar.show {
+    display: block;
+  }
+
+  .navbar-nav {
+    align-items: stretch !important;
+    padding-top: 0;
+  }
+
+  .navbar-nav .nav-link {
     width: 100%;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border-radius: 14px;
   }
 
-  .orders-card-header {
-    padding: 22px;
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link.router-link-active {
+    background: var(--brand-primary-light);
+  }
+
+  .order-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .preview-panel,
+  .cart-preview-panel,
+  .order-preview-panel {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 8px;
+    box-shadow: none;
+  }
+  .table-responsive {
+    display: none;
+  }
+
+  .mobile-order-list {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .mobile-order-card {
+    padding: 18px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid var(--brand-border);
+    box-shadow: 0 10px 26px rgba(120, 54, 28, 0.08);
+  }
+
+  .mobile-order-card.unpaid {
+    background: var(--brand-bg-soft);
+  }
+
+  .mobile-order-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .mobile-order-id {
+    color: var(--brand-primary);
+    font-size: 18px;
+    font-weight: 900;
+    word-break: break-all;
+  }
+
+  .mobile-order-time {
+    margin-top: 8px;
+    color: var(--brand-muted);
+    font-size: 14px;
+  }
+
+  .mobile-order-arrow {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    color: var(--brand-primary);
+    background: var(--brand-primary-light);
+    font-size: 20px;
+  }
+
+  .mobile-order-row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .mobile-order-row span {
+    color: var(--brand-muted);
+  }
+
+  .mobile-order-row strong {
+    color: var(--brand-text);
+    word-break: break-word;
+  }
+
+  .mobile-order-products {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .mobile-product-pill {
+    width: fit-content;
+    max-width: 100%;
+    padding: 7px 11px;
+    border-radius: 999px;
+    color: var(--brand-primary);
+    background: var(--brand-primary-light);
+    border: 1px solid var(--brand-border);
+    font-size: 13px;
+    font-weight: 800;
   }
 
   .admin-order-table {
-    min-width: 980px;
+    min-width: 0;
   }
 }
 </style>

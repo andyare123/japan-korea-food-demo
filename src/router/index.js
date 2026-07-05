@@ -47,28 +47,11 @@ const routes = [
     name: 'Favorites',
     component: () => import('../views/Favorite.vue'),
   },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('../views/login.vue'),
-  },
-
-  // 後台商品管理
-  {
-    path: '/admin/products',
-    name: 'AdminProducts',
-    component: () => import('../views/Products.vue'),
-  },
   // 後台訂單管理
   {
     path: '/admin/orders',
     name: 'AdminOrders',
     component: () => import('../views/AdminOrders.vue'),
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import('../views/Dashboard.vue'),
   },
 ];
 

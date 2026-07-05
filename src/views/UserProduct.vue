@@ -1,49 +1,44 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <Loading :active="isLoading" />
 
   <div class="container py-5">
     <div class="page-header mb-4">
-      <span class="badge bg-danger mb-3">人氣日韓料理訂購</span>
+      <span class="badge bg-brand-soft text-brand mb-3">人氣日韓料理訂購</span>
       <h1 class="fw-bold">今天想吃日式還是韓式？</h1>
-      <p class="text-muted mb-0">
-        精選主廚推薦料理，支援收藏、加入購物車與優惠券折抵。
-      </p>
+      <p class="text-muted mb-0">精選主廚推薦料理，支援收藏、加入購物車與優惠券折抵。</p>
     </div>
 
     <div class="coupon-box mb-4">
       <div>
         <h5 class="fw-bold mb-1">限時優惠券</h5>
-        <p class="mb-0 text-muted">
-          輸入優惠碼 <strong>JPKR100</strong>，滿 699 現折 100 元。
-        </p>
+        <p class="mb-0 text-muted">輸入優惠碼 <strong>JPKR100</strong>，滿 699 現折 100 元。</p>
       </div>
 
-      <router-link to="/user/cart" class="btn btn-danger">
+      <router-link to="/user/cart" class="btn btn-brand">
         前往購物車使用
       </router-link>
     </div>
 
     <div class="category-tabs mb-4">
       <button
-        class="btn"
-        :class="selectedCategory === '全部' ? 'btn-dark' : 'btn-outline-dark'"
+        class="btn category-btn"
+        :class="{ active: selectedCategory === '全部' }"
         @click="changeCategory('全部')"
       >
         全部
       </button>
 
       <button
-        class="btn"
-        :class="selectedCategory === '日式料理' ? 'btn-danger' : 'btn-outline-danger'"
+        class="btn category-btn"
+        :class="{ active: selectedCategory === '日式料理' }"
         @click="changeCategory('日式料理')"
       >
         日式料理
       </button>
 
       <button
-        class="btn"
-        :class="selectedCategory === '韓式料理' ? 'btn-warning' : 'btn-outline-warning'"
+        class="btn category-btn"
+        :class="{ active: selectedCategory === '韓式料理' }"
         @click="changeCategory('韓式料理')"
       >
         韓式料理
@@ -52,28 +47,31 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <p class="text-muted mb-0">
-        共 {{ filteredProducts.length }} 道料理，
-        目前第 {{ currentPage }} / {{ totalPages }} 頁
+        共 {{ filteredProducts.length }} 道料理， 目前第 {{ currentPage }} / {{ totalPages }} 頁
       </p>
 
-      <p class="text-muted mb-0">
-        每頁顯示 {{ perPage }} 道
-      </p>
+      <p class="text-muted mb-0">每頁顯示 {{ perPage }} 道</p>
     </div>
 
     <div class="row g-4">
-      <div
-        v-for="item in pagedProducts"
-        :key="item.id"
-        class="col-md-6 col-lg-4"
-      >
-        <div class="food-card">
+      <div v-for="item in pagedProducts" :key="item.id" class="col-md-6 col-lg-4">
+        <div
+          class="food-card clickable-card"
+          role="button"
+          tabindex="0"
+          @click="goProductDetail(item.id)"
+          @keydown.enter="goProductDetail(item.id)"
+        >
           <div
             class="food-img"
             :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
           >
-            <button class="favorite-btn" @click="toggleFavorite(item)">
-              {{ isFavorite(item.id) ? '❤️' : '🤍' }}
+            <button
+              class="favorite-btn"
+              type="button"
+              @click.stop="toggleFavorite(item)"
+            >
+              {{ isFavorite(item.id) ? "❤️" : "🤍" }}
             </button>
           </div>
 
@@ -94,19 +92,15 @@
             </p>
 
             <div class="mb-3">
-              <del class="text-muted me-2">
-                NT$ {{ item.origin_price }}
-              </del>
-              <span class="h5 text-danger fw-bold">
-                NT$ {{ item.price }}
-              </span>
+              <del class="text-muted me-2"> NT$ {{ item.origin_price }} </del>
+              <span class="h5 text-danger fw-bold"> NT$ {{ item.price }} </span>
             </div>
 
-           <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group-sm mb-3">
               <button
                 type="button"
                 class="btn btn-outline-secondary"
-                @click="decreaseQty(item.id)"
+                @click.stop="decreaseQty(item.id)"
               >
                 -
               </button>
@@ -116,33 +110,35 @@
                 class="form-control text-center"
                 min="1"
                 v-model.number="cartQty[item.id]"
-              >
+                @click.stop
+              />
 
               <button
                 type="button"
                 class="btn btn-outline-secondary"
-                @click="increaseQty(item.id)"
+                @click.stop="increaseQty(item.id)"
               >
                 +
               </button>
 
               <span class="input-group-text">
-                {{ item.unit || '份' }}
+                {{ item.unit || "份" }}
               </span>
             </div>
 
             <div class="d-flex gap-2">
               <router-link
                 :to="`/product/${item.id}`"
-                class="btn btn-outline-dark flex-fill"
+                class="btn btn-outline-brand flex-fill"
+                @click.stop
               >
                 查看詳情
               </router-link>
 
               <button
                 type="button"
-                class="btn btn-danger flex-fill"
-                @click="addToCart(item.id)"
+                class="btn btn-brand flex-fill"
+                @click.stop="addToCart(item.id)"
               >
                 加入購物車
               </button>
@@ -157,18 +153,10 @@
     </div>
 
     <!-- 頁碼 -->
-    <nav
-      v-if="totalPages > 1"
-      class="mt-5 d-flex justify-content-center"
-      aria-label="料理頁碼"
-    >
+    <nav v-if="totalPages > 1" class="mt-5 d-flex justify-content-center" aria-label="料理頁碼">
       <ul class="pagination pagination-lg">
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <button
-            class="page-link"
-            type="button"
-            @click="changePage(currentPage - 1)"
-          >
+          <button class="page-link" type="button" @click="changePage(currentPage - 1)">
             上一頁
           </button>
         </li>
@@ -179,21 +167,13 @@
           class="page-item"
           :class="{ active: currentPage === page }"
         >
-          <button
-            class="page-link"
-            type="button"
-            @click="changePage(page)"
-          >
+          <button class="page-link" type="button" @click="changePage(page)">
             {{ page }}
           </button>
         </li>
 
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <button
-            class="page-link"
-            type="button"
-            @click="changePage(currentPage + 1)"
-          >
+          <button class="page-link" type="button" @click="changePage(currentPage + 1)">
             下一頁
           </button>
         </li>
@@ -203,10 +183,11 @@
 </template>
 
 <script>
+import emitter from '../methods/emitter';
+
 const { VUE_APP_API, VUE_APP_PATH } = process.env;
 
 export default {
-  inject: ['emitter'],
   data() {
     return {
       products: [],
@@ -245,7 +226,7 @@ export default {
   },
   methods: {
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
@@ -267,14 +248,8 @@ export default {
             }
           });
         })
-        .catch((error) => {
-          console.error('取得料理列表失敗:', error);
-
-          this.pushToast(
-            '取得料理列表失敗',
-            '請稍後再試，或重新整理頁面。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('取得料理列表失敗', '請稍後再試，或重新整理頁面。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -298,18 +273,16 @@ export default {
         behavior: 'smooth',
       });
     },
-
+    goProductDetail(id) {
+      this.$router.push(`/product/${id}`);
+    },
     addToCart(id) {
       const qty = Number(this.cartQty[id]) || 1;
 
       if (qty < 1) {
         this.cartQty[id] = 1;
 
-        this.pushToast(
-          '數量錯誤',
-          '餐點數量至少需要 1 份。',
-          'warning',
-        );
+        this.pushToast('數量錯誤', '餐點數量至少需要 1 份。', 'warning');
         return;
       }
 
@@ -325,10 +298,8 @@ export default {
       this.$http
         .post(`${VUE_APP_API}/api/${VUE_APP_PATH}/cart`, { data })
         .then((res) => {
-          this.$httpMessageState(res, '加入購物車');
-
           if (res.data.success) {
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
 
             this.pushToast(
               '已加入購物車',
@@ -336,21 +307,11 @@ export default {
               'success',
             );
           } else {
-            this.pushToast(
-              '加入購物車失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('加入購物車失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('加入購物車失敗:', error);
-
-          this.pushToast(
-            '加入購物車失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('加入購物車失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -380,23 +341,15 @@ export default {
       if (index === -1) {
         this.favorites.push(item);
 
-        this.pushToast(
-          '已加入我的最愛',
-          `${item.title || '料理'} 已加入收藏清單。`,
-          'success',
-        );
+        this.pushToast('已加入我的最愛', `${item.title || '料理'} 已加入收藏清單。`, 'success');
       } else {
         this.favorites.splice(index, 1);
 
-        this.pushToast(
-          '已移除我的最愛',
-          `${item.title || '料理'} 已從收藏清單移除。`,
-          'warning',
-        );
+        this.pushToast('已移除我的最愛', `${item.title || '料理'} 已從收藏清單移除。`, 'warning');
       }
 
       localStorage.setItem('favoriteFoods', JSON.stringify(this.favorites));
-      window.dispatchEvent(new Event('favorites-updated'));
+      emitter.emit('favorites-updated');
     },
 
     isFavorite(id) {
@@ -413,8 +366,8 @@ export default {
 .page-header {
   padding: 36px;
   border-radius: 28px;
-  background: linear-gradient(135deg, #fff4ec, #ffffff);
-  border: 1px solid #f2dfd0;
+  background: linear-gradient(135deg, var(--brand-primary-light), #ffffff);
+  border: 1px solid var(--brand-border);
 }
 
 .coupon-box {
@@ -424,8 +377,8 @@ export default {
   gap: 16px;
   padding: 24px;
   border-radius: 22px;
-  background: #fff8e8;
-  border: 1px dashed #d39b37;
+  background: var(--brand-bg-soft);
+  border: 1px dashed var(--brand-border);
 }
 
 .category-tabs {
@@ -438,10 +391,12 @@ export default {
   height: 100%;
   overflow: hidden;
   border-radius: 24px;
-  background: #fff;
-  border: 1px solid #eee;
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .food-card:hover {
@@ -485,6 +440,22 @@ export default {
 
 .pagination .page-link:focus {
   box-shadow: 0 0 0 0.2rem rgba(178, 58, 46, 0.18);
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:focus {
+  outline: 3px solid rgba(178, 58, 46, 0.22);
+  outline-offset: 4px;
+}
+
+.food-card:hover,
+.clickable-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--brand-primary);
+  box-shadow: 0 20px 46px rgba(120, 54, 28, 0.13);
 }
 
 @media (max-width: 768px) {

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <Loading :active="isLoading"></Loading>
 
@@ -8,9 +7,7 @@
       <div class="page-hero mb-5">
         <div class="hero-content">
           <span class="hero-badge">YOUR ORDER</span>
-          <h1 class="fw-bold mt-3 mb-3">
-            我的餐點購物車
-          </h1>
+          <h1 class="fw-bold mt-3 mb-3">我的餐點購物車</h1>
           <p class="text-muted mb-0">
             請確認餐點數量、套用優惠券，確認無誤後即可進入完成訂購流程。
           </p>
@@ -25,25 +22,12 @@
               <div>
                 <span class="small text-danger fw-bold">CART DETAIL</span>
                 <h4 class="fw-bold mb-1">我的餐點購物車</h4>
-                <p class="text-muted mb-0 small">
-                  確認餐點數量後，可套用優惠券並進入下一步。
-                </p>
+                <p class="text-muted mb-0 small">確認餐點數量後，可套用優惠券並進入下一步。</p>
               </div>
             </div>
 
-            <div class="mb-4">
-              <router-link to="/products" class="btn btn-outline-secondary w-100">
-                <i class="bi bi-arrow-left me-1"></i>
-                繼續挑選日韓料理
-              </router-link>
-            </div>
-
             <div v-if="cart.carts && cart.carts.length">
-              <div
-                class="cart-item"
-                v-for="item in cart.carts"
-                :key="item.id"
-              >
+              <div class="cart-item" v-for="item in cart.carts" :key="item.id">
                 <button
                   type="button"
                   class="btn btn-outline-danger btn-sm cart-remove"
@@ -61,16 +45,14 @@
                 <div class="cart-info">
                   <div class="d-flex align-items-center gap-2 mb-1">
                     <span class="cart-category">
-                      {{ item.product?.category || '料理' }}
+                      {{ item.product?.category || "料理" }}
                     </span>
 
-                    <span class="text-success small" v-if="item.coupon">
-                      已套用優惠
-                    </span>
+                    <span class="text-success small" v-if="item.coupon"> 已套用優惠 </span>
                   </div>
 
                   <h6 class="fw-bold mb-2">
-                    {{ item.product?.title || '未命名餐點' }}
+                    {{ item.product?.title || "未命名餐點" }}
                   </h6>
 
                   <div class="input-group input-group-sm cart-qty">
@@ -81,19 +63,16 @@
                       :disabled="item.id === status.loadingItem"
                       @change="updateCart(item)"
                       v-model.number="item.qty"
-                    >
+                    />
 
                     <div class="input-group-text">
-                      {{ item.product?.unit || '份' }}
+                      {{ item.product?.unit || "份" }}
                     </div>
                   </div>
                 </div>
 
                 <div class="cart-price text-end">
-                  <small
-                    v-if="cart.final_total !== cart.total"
-                    class="text-success d-block"
-                  >
+                  <small v-if="cart.final_total !== cart.total" class="text-success d-block">
                     折扣價
                   </small>
 
@@ -111,7 +90,7 @@
                 還沒有加入任何日韓料理，先回到料理列表挑選想吃的餐點吧。
               </p>
 
-              <router-link to="/products" class="btn btn-danger">
+              <router-link to="/products" class="btn btn-brand">
                 <i class="bi bi-search me-1"></i>
                 前往挑選料理
               </router-link>
@@ -132,7 +111,7 @@
                 <strong>{{ $filters.currency(cart.final_total || 0) }}</strong>
               </div>
 
-              <hr>
+              <hr />
 
               <div class="d-flex justify-content-between total-line">
                 <span>應付總額</span>
@@ -146,7 +125,7 @@
                 <h5 class="fw-bold mb-1">日韓美食優惠券</h5>
                 <p class="mb-0 text-muted">
                   輸入優惠碼
-                  <strong class="text-danger">JPKR100</strong>
+                  <strong class="text-brand">JPKR100</strong>
                   ，滿額享折扣優惠。
                 </p>
               </div>
@@ -160,10 +139,10 @@
                 v-model.trim="coupon_code"
                 placeholder="請輸入優惠碼"
                 @keyup.enter="addCouponCode"
-              >
+              />
 
               <button
-                class="btn btn-outline-danger"
+                class="btn btn-outline-brand"
                 type="button"
                 :disabled="isLoading || !cart.carts.length"
                 @click="addCouponCode"
@@ -172,10 +151,15 @@
               </button>
             </div>
 
-            <div class="d-grid mt-4">
+            <div class="cart-action-row mt-4">
+              <router-link to="/products" class="btn btn-outline-brand btn-lg continue-shopping-btn">
+                <i class="bi bi-arrow-left me-1"></i>
+                繼續挑選日韓料理
+              </router-link>
+
               <button
                 type="button"
-                class="btn btn-danger btn-lg next-checkout-btn"
+                class="btn btn-brand btn-lg next-checkout-btn"
                 :disabled="!cart.carts || !cart.carts.length"
                 @click="goCheckoutProcess"
               >
@@ -191,10 +175,11 @@
 </template>
 
 <script>
+import emitter from '../methods/emitter';
+
 const { VUE_APP_API, VUE_APP_PATH } = process.env;
 
 export default {
-  inject: ['emitter'],
   data() {
     return {
       isLoading: false,
@@ -212,7 +197,7 @@ export default {
   },
   methods: {
     pushToast(title, content = '', style = 'danger') {
-      this.emitter.emit('push-message', {
+      emitter.emit('push-message', {
         style,
         title,
         content,
@@ -224,7 +209,8 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((response) => {
           this.cart = response.data.data || {
             carts: [],
@@ -232,14 +218,8 @@ export default {
             final_total: 0,
           };
         })
-        .catch((error) => {
-          console.error('取得購物車失敗:', error);
-
-          this.pushToast(
-            '取得購物車失敗',
-            '請稍後再試，或重新整理頁面。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('取得購物車失敗', '請稍後再試，或重新整理頁面。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -247,15 +227,10 @@ export default {
     },
 
     updateCart(item) {
-      if (item.qty < 1) {
-        // eslint-disable-next-line no-param-reassign
-        item.qty = 1;
+      const fixedQty = Number(item.qty) < 1 ? 1 : Number(item.qty);
 
-        this.pushToast(
-          '數量錯誤',
-          '餐點數量至少需要 1 份。',
-          'warning',
-        );
+      if (Number(item.qty) < 1) {
+        this.pushToast('數量錯誤', '餐點數量至少需要 1 份。', 'warning');
       }
 
       const url = `${VUE_APP_API}/api/${VUE_APP_PATH}/cart/${item.id}`;
@@ -265,13 +240,12 @@ export default {
 
       const cart = {
         product_id: item.product_id,
-        qty: item.qty,
+        qty: fixedQty,
       };
 
-      this.$http.put(url, { data: cart })
+      this.$http
+        .put(url, { data: cart })
         .then((res) => {
-          this.$httpMessageState(res, '更新購物車');
-
           if (res.data.success) {
             this.pushToast(
               '更新購物車成功',
@@ -280,23 +254,13 @@ export default {
             );
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '更新購物車失敗',
-              res.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('更新購物車失敗', res.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('更新購物車失敗:', error);
-
-          this.pushToast(
-            '更新購物車失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('更新購物車失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -310,35 +274,20 @@ export default {
       this.status.loadingItem = id;
       this.isLoading = true;
 
-      this.$http.delete(url)
+      this.$http
+        .delete(url)
         .then((response) => {
-          this.$httpMessageState(response, '移除購物車品項');
-
           if (response.data.success) {
-            this.pushToast(
-              '已移除餐點',
-              '餐點已從購物車移除。',
-              'success',
-            );
+            this.pushToast('已移除餐點', '餐點已從購物車移除。', 'success');
 
             this.getCart();
-            window.dispatchEvent(new Event('cart-updated'));
+            emitter.emit('cart-updated');
           } else {
-            this.pushToast(
-              '移除餐點失敗',
-              response.data.message || '請稍後再試。',
-              'danger',
-            );
+            this.pushToast('移除餐點失敗', response.data.message || '請稍後再試。', 'danger');
           }
         })
-        .catch((error) => {
-          console.error('移除購物車品項失敗:', error);
-
-          this.pushToast(
-            '移除餐點失敗',
-            '請確認網路連線或稍後再試。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('移除餐點失敗', '請確認網路連線或稍後再試。', 'danger');
         })
         .finally(() => {
           this.status.loadingItem = '';
@@ -357,11 +306,7 @@ export default {
       }
 
       if (!this.coupon_code.trim()) {
-        this.pushToast(
-          '請輸入優惠券代碼',
-          '請輸入優惠碼後再按下套用。',
-          'warning',
-        );
+        this.pushToast('請輸入優惠券代碼', '請輸入優惠碼後再按下套用。', 'warning');
         return;
       }
 
@@ -373,10 +318,9 @@ export default {
 
       this.isLoading = true;
 
-      this.$http.post(url, { data: coupon })
+      this.$http
+        .post(url, { data: coupon })
         .then((response) => {
-          this.$httpMessageState(response, '套用優惠券');
-
           if (response.data.success) {
             this.pushToast(
               '套用優惠券成功',
@@ -393,14 +337,8 @@ export default {
             );
           }
         })
-        .catch((error) => {
-          console.error('優惠券套用失敗:', error);
-
-          this.pushToast(
-            '優惠券套用失敗',
-            '請確認後台是否有建立並啟用這張優惠券。',
-            'danger',
-          );
+        .catch(() => {
+          this.pushToast('優惠券套用失敗', '請確認後台是否有建立並啟用這張優惠券。', 'danger');
         })
         .finally(() => {
           this.isLoading = false;
@@ -409,11 +347,7 @@ export default {
 
     goCheckoutProcess() {
       if (!this.cart.carts || !this.cart.carts.length) {
-        this.pushToast(
-          '購物車目前沒有餐點',
-          '請先加入餐點後再進入完成訂購流程。',
-          'warning',
-        );
+        this.pushToast('購物車目前沒有餐點', '請先加入餐點後再進入完成訂購流程。', 'warning');
         return;
       }
 
@@ -430,8 +364,8 @@ export default {
 .food-cart-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(220, 53, 69, 0.12), transparent 32%),
-    linear-gradient(180deg, #fff7ef 0%, #ffffff 44%, #fffaf5 100%);
+    radial-gradient(circle at top left, rgba(178, 58, 46, 0.12), transparent 32%),
+    linear-gradient(180deg, var(--brand-bg) 0%, #ffffff 44%, var(--brand-bg-soft) 100%);
 }
 
 .page-hero {
@@ -442,7 +376,7 @@ export default {
   background:
     linear-gradient(135deg, rgba(178, 58, 46, 0.14), rgba(255, 255, 255, 0.96)),
     #ffffff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 18px 45px rgba(110, 58, 30, 0.12);
 }
 
@@ -463,8 +397,8 @@ export default {
   display: inline-block;
   padding: 8px 14px;
   border-radius: 999px;
-  color: #b23a2e;
-  background: #fff0e7;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -473,7 +407,7 @@ export default {
   padding: 28px;
   border-radius: 30px;
   background: #ffffff;
-  border: 1px solid #f1d8ca;
+  border: 1px solid var(--brand-border);
   box-shadow: 0 18px 48px rgba(120, 54, 28, 0.13);
 }
 
@@ -484,13 +418,17 @@ export default {
   gap: 12px;
 }
 
+.cart-header .text-danger {
+  color: var(--brand-primary) !important;
+}
+
 .cart-item {
   position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px 0;
-  border-bottom: 1px solid #f1e4dc;
+  border-bottom: 1px solid var(--brand-border);
 }
 
 .cart-remove {
@@ -507,8 +445,8 @@ export default {
   border-radius: 18px;
   background-size: cover;
   background-position: center;
-  background-color: #fff4ec;
-  border: 1px solid #f1d8ca;
+  background-color: var(--brand-primary-light);
+  border: 1px solid var(--brand-border);
 }
 
 .cart-info {
@@ -520,10 +458,14 @@ export default {
   display: inline-block;
   padding: 4px 9px;
   border-radius: 999px;
-  color: #b23a2e;
-  background: #fff0e7;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
   font-size: 12px;
   font-weight: 800;
+}
+
+.cart-price strong {
+  color: var(--brand-primary);
 }
 
 .cart-qty {
@@ -538,35 +480,41 @@ export default {
   padding: 34px 20px;
   border-radius: 22px;
   text-align: center;
-  color: #6c757d;
-  background: #fff8f2;
-  border: 1px dashed #e5c9b8;
+  color: var(--brand-muted);
+  background: var(--brand-bg-soft);
+  border: 1px dashed var(--brand-border);
 }
 
 .empty-cart i {
   display: block;
   margin-bottom: 10px;
   font-size: 42px;
-  color: #c9a18b;
+  color: var(--brand-primary);
+  opacity: 0.55;
 }
 
 .cart-summary {
   padding: 20px;
   border-radius: 20px;
-  background: #fff8f2;
-  border: 1px solid #f1d8ca;
+  background: var(--brand-bg-soft);
+  border: 1px solid var(--brand-border);
+}
+
+.cart-summary hr {
+  border-color: var(--brand-border);
+  opacity: 1;
 }
 
 .total-line {
-  color: #b23a2e;
+  color: var(--brand-primary);
   font-size: 18px;
 }
 
 .coupon-box {
   padding: 20px;
   border-radius: 20px;
-  background: #fff8e1;
-  border: 1px solid #ffe0a1;
+  background: var(--brand-primary-light);
+  border: 1px solid var(--brand-border);
 }
 
 .coupon-input-group .form-control,
@@ -578,6 +526,23 @@ export default {
   min-height: 52px;
   border-radius: 14px;
   font-weight: 900;
+}
+
+.cart-action-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(260px, 1.4fr);
+  gap: 12px;
+}
+
+.continue-shopping-btn,
+.next-checkout-btn {
+  min-height: 52px;
+  border-radius: 14px;
+  font-weight: 900;
+}
+
+.next-checkout-btn {
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {
@@ -634,6 +599,17 @@ export default {
 
   .coupon-input-group .btn {
     margin-top: 8px;
+  }
+  .cart-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .next-checkout-btn {
+    order: 1;
+  }
+
+  .continue-shopping-btn {
+    order: 2;
   }
 }
 </style>
