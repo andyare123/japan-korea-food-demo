@@ -54,10 +54,13 @@
 
           <div v-if="cart.carts && cart.carts.length">
             <div class="confirm-item" v-for="item in cart.carts" :key="item.id">
-              <div
-                class="confirm-img"
-                :style="{ backgroundImage: `url(${item.product.imageUrl || defaultImage})` }"
-              ></div>
+             <div class="confirm-img">
+                <img
+                  :src="item.product.imageUrl || defaultImage"
+                  :alt="item.product.title || '餐點圖片'"
+                  class="confirm-img-tag"
+                />
+              </div>
 
               <div class="confirm-info">
                 <h6 class="fw-bold mb-1">
@@ -151,7 +154,7 @@
               <p class="text-muted mb-0">請填寫正確的聯絡資訊，方便後續通知與配送。</p>
             </div>
           </div>
-          <Form v-slot="{ errors, validate }" :validate-on-mount="true" @submit.prevent>
+          <Form v-slot="{ errors, validate }" @submit.prevent>
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="email" class="form-label fw-bold">
@@ -164,15 +167,19 @@
                   type="email"
                   class="form-control form-control-lg"
                   :class="{
-                    'is-invalid': errors.Email,
-                    'is-valid': !errors.Email && form.user.email,
+                    'is-invalid': isStep2Submitted && errors.Email,
+                    'is-valid': isStep2Submitted && !errors.Email && form.user.email,
                   }"
                   placeholder="請輸入 Email"
                   rules="required|email"
                   v-model="form.user.email"
                 ></Field>
 
-                <ErrorMessage name="Email" class="invalid-feedback"></ErrorMessage>
+                <ErrorMessage
+                  v-if="isStep2Submitted"
+                  name="Email"
+                  class="invalid-feedback"
+                ></ErrorMessage>
               </div>
 
               <div class="col-md-6">
@@ -186,15 +193,19 @@
                   type="text"
                   class="form-control form-control-lg"
                   :class="{
-                    'is-invalid': errors['姓名'],
-                    'is-valid': !errors['姓名'] && form.user.name,
+                    'is-invalid': isStep2Submitted && errors['姓名'],
+                    'is-valid': isStep2Submitted && !errors['姓名'] && form.user.name,
                   }"
                   placeholder="請輸入姓名"
                   rules="required|min:2"
                   v-model="form.user.name"
                 ></Field>
 
-                <ErrorMessage name="姓名" class="invalid-feedback"></ErrorMessage>
+                <ErrorMessage
+                  v-if="isStep2Submitted"
+                  name="姓名"
+                  class="invalid-feedback"
+                ></ErrorMessage>
               </div>
 
               <div class="col-md-6">
@@ -208,15 +219,19 @@
                   type="tel"
                   class="form-control form-control-lg"
                   :class="{
-                    'is-invalid': errors['電話'],
-                    'is-valid': !errors['電話'] && form.user.tel,
+                    'is-invalid': isStep2Submitted && errors['電話'],
+                    'is-valid': isStep2Submitted && !errors['電話'] && form.user.tel,
                   }"
                   placeholder="請輸入手機號碼，例如：0912345678"
                   rules="required|twMobile"
                   v-model="form.user.tel"
                 ></Field>
 
-                <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
+                <ErrorMessage
+                  v-if="isStep2Submitted"
+                  name="電話"
+                  class="invalid-feedback"
+                ></ErrorMessage>
 
                 <small class="text-muted d-block mt-1"> 請輸入 09 開頭的 10 碼手機號碼。 </small>
               </div>
@@ -232,15 +247,19 @@
                   type="text"
                   class="form-control form-control-lg"
                   :class="{
-                    'is-invalid': errors['地址'],
-                    'is-valid': !errors['地址'] && form.user.address,
+                    'is-invalid': isStep2Submitted && errors['地址'],
+                    'is-valid': isStep2Submitted && !errors['地址'] && form.user.address,
                   }"
                   placeholder="請輸入完整地址"
                   rules="required|min:6"
                   v-model="form.user.address"
                 ></Field>
 
-                <ErrorMessage name="地址" class="invalid-feedback"></ErrorMessage>
+                <ErrorMessage
+                  v-if="isStep2Submitted"
+                  name="地址"
+                  class="invalid-feedback"
+                ></ErrorMessage>
               </div>
 
               <div class="col-12">
@@ -257,7 +276,7 @@
             </div>
 
             <div class="d-flex justify-content-between mt-4">
-              <button type="button" class="btn btn-outline-secondary btn-lg" @click="prevStep">
+              <button type="button" class="btn btn-outline-brand btn-lg" @click="prevStep">
                 <i class="bi bi-arrow-left me-1"></i>
                 上一步
               </button>
@@ -266,11 +285,7 @@
                 type="button"
                 class="btn btn-brand btn-lg"
                 :disabled="isLoading"
-                @click="
-                  validate().then((result) => {
-                    if (result.valid) nextStep();
-                  })
-                "
+                @click="handleStep2Next(validate)"
               >
                 下一步，確認訂單
                 <i class="bi bi-arrow-right ms-1"></i>
@@ -396,6 +411,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      isStep2Submitted: false,
       status: {
         loadingItem: '',
       },
@@ -516,7 +532,15 @@ export default {
           this.isLoading = false;
         });
     },
+    handleStep2Next(validate) {
+      this.isStep2Submitted = true;
 
+      validate().then((result) => {
+        if (result.valid) {
+          this.nextStep();
+        }
+      });
+    },
     nextStep() {
       if (this.checkoutStep === 1 && !this.cart.carts.length) {
         this.pushToast('購物車目前沒有餐點', '請先加入餐點後再進入下一步。', 'warning');
@@ -525,6 +549,10 @@ export default {
 
       if (this.checkoutStep < 3) {
         this.checkoutStep += 1;
+
+        if (this.checkoutStep === 2) {
+          this.isStep2Submitted = false;
+        }
 
         window.scrollTo({
           top: 0,
@@ -722,10 +750,16 @@ export default {
   width: 92px;
   height: 92px;
   border-radius: 22px;
-  background-size: cover;
-  background-position: center;
-  background-color: #fff4ec;
+  overflow: hidden;
+  background: #fff4ec;
   border: 1px solid #f1d8ca;
+}
+
+.confirm-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .confirm-info {

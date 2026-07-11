@@ -62,10 +62,13 @@
           @click="goProductDetail(item.id)"
           @keydown.enter="goProductDetail(item.id)"
         >
-          <div
-            class="food-img"
-            :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
-          >
+          <div class="food-img">
+            <img
+              :src="item.imageUrl || defaultImage"
+              :alt="item.title || '日韓料理圖片'"
+              class="food-img-tag"
+            />
+
             <button
               class="favorite-btn"
               type="button"
@@ -96,48 +99,40 @@
               <span class="h5 text-danger fw-bold"> NT$ {{ item.price }} </span>
             </div>
 
-            <div class="input-group input-group-sm mb-3">
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                @click.stop="decreaseQty(item.id)"
-              >
-                -
-              </button>
+            <div class="product-action-row">
+              <div class="input-group input-group-sm product-qty-control">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  @click.stop="decreaseQty(item.id)"
+                >
+                  -
+                </button>
 
-              <input
-                type="number"
-                class="form-control text-center"
-                min="1"
-                v-model.number="cartQty[item.id]"
-                @click.stop
-              />
+                <input
+                  type="number"
+                  class="form-control text-center"
+                  min="1"
+                  v-model.number="cartQty[item.id]"
+                  @click.stop
+                />
 
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                @click.stop="increaseQty(item.id)"
-              >
-                +
-              </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  @click.stop="increaseQty(item.id)"
+                >
+                  +
+                </button>
 
-              <span class="input-group-text">
-                {{ item.unit || "份" }}
-              </span>
-            </div>
-
-            <div class="d-flex gap-2">
-              <router-link
-                :to="`/product/${item.id}`"
-                class="btn btn-outline-brand flex-fill"
-                @click.stop
-              >
-                查看詳情
-              </router-link>
+                <span class="input-group-text">
+                  {{ item.unit || "份" }}
+                </span>
+              </div>
 
               <button
                 type="button"
-                class="btn btn-brand flex-fill"
+                class="btn btn-brand add-cart-btn"
                 @click.stop="addToCart(item.id)"
               >
                 加入購物車
@@ -255,7 +250,9 @@ export default {
           this.isLoading = false;
         });
     },
-
+    getFavorites() {
+      this.favorites = JSON.parse(localStorage.getItem('favoriteFoods')) || [];
+    },
     changeCategory(category) {
       this.selectedCategory = category;
       this.currentPage = 1;
@@ -358,6 +355,12 @@ export default {
   },
   mounted() {
     this.getProducts();
+    this.getFavorites();
+
+    emitter.on('favorites-updated', this.getFavorites);
+  },
+  beforeUnmount() {
+    emitter.off('favorites-updated', this.getFavorites);
   },
 };
 </script>
@@ -407,8 +410,15 @@ export default {
 .food-img {
   position: relative;
   height: 230px;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
+  background: #fff4ec;
+}
+
+.food-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .favorite-btn {
@@ -457,7 +467,24 @@ export default {
   border-color: var(--brand-primary);
   box-shadow: 0 20px 46px rgba(120, 54, 28, 0.13);
 }
+.product-action-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, auto);
+  gap: 10px;
+  align-items: stretch;
+}
 
+.product-qty-control {
+  min-width: 0;
+}
+
+.add-cart-btn {
+  min-height: 38px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 @media (max-width: 768px) {
   .coupon-box {
     flex-direction: column;
@@ -471,6 +498,13 @@ export default {
   .pagination {
     flex-wrap: wrap;
     gap: 6px;
+  }
+   .product-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .add-cart-btn {
+    width: 100%;
   }
 }
 </style>

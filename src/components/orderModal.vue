@@ -1,6 +1,6 @@
 <template>
   <div
-    id="productModal"
+    id="orderModal"
     ref="modal"
     class="modal fade"
     tabindex="-1"
@@ -8,13 +8,14 @@
     aria-labelledby="orderModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content order-modal border-0">
-        <!-- Header -->
         <div class="modal-header order-modal-header">
           <div>
             <span class="modal-kicker">ORDER DETAIL</span>
-            <h5 id="orderModalLabel" class="modal-title fw-bold mt-1">訂單細節</h5>
+            <h5 id="orderModalLabel" class="modal-title fw-bold mt-2">
+              訂單詳細資料
+            </h5>
           </div>
 
           <button
@@ -25,25 +26,21 @@
           ></button>
         </div>
 
-        <!-- Body -->
         <div class="modal-body p-4 p-lg-5">
           <div class="order-top-card mb-4">
             <div>
               <span class="text-muted small">訂單編號</span>
               <h6 class="fw-bold mb-0 order-id">
-                {{ tempOrder.id || "未取得訂單編號" }}
+                {{ tempOrder.id || '未取得訂單編號' }}
               </h6>
             </div>
 
-            <div class="text-lg-end">
-              <span class="pay-status" :class="tempOrder.is_paid ? 'paid' : 'unpaid'">
-                {{ tempOrder.is_paid ? "已付款" : "尚未付款" }}
-              </span>
-            </div>
+            <span class="pay-status" :class="tempOrder.is_paid ? 'paid' : 'unpaid'">
+              {{ tempOrder.is_paid ? '已付款' : '尚未付款' }}
+            </span>
           </div>
 
           <div class="row g-4">
-            <!-- 用戶資料 -->
             <div class="col-lg-4">
               <section class="info-card h-100">
                 <div class="section-title mb-4">
@@ -51,38 +48,44 @@
                     <i class="bi bi-person-lines-fill"></i>
                   </span>
                   <div>
-                    <h5 class="fw-bold mb-1">用戶資料</h5>
-                    <p class="text-muted mb-0 small">訂購者聯絡資訊</p>
+                    <h5 class="fw-bold mb-1">訂購人資料</h5>
+                    <p class="text-muted mb-0 small">顧客聯絡與配送資訊</p>
                   </div>
                 </div>
 
                 <div class="info-list" v-if="tempOrder.user">
                   <div class="info-row">
                     <span>姓名</span>
-                    <strong>{{ tempOrder.user.name || "未填寫" }}</strong>
+                    <strong>{{ tempOrder.user.name || '未填寫' }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>Email</span>
-                    <strong>{{ tempOrder.user.email || "未填寫" }}</strong>
+                    <strong>{{ tempOrder.user.email || '未填寫' }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>電話</span>
-                    <strong>{{ tempOrder.user.tel || "未填寫" }}</strong>
+                    <strong>{{ tempOrder.user.tel || '未填寫' }}</strong>
                   </div>
 
                   <div class="info-row">
                     <span>地址</span>
-                    <strong>{{ tempOrder.user.address || "未填寫" }}</strong>
+                    <strong>{{ tempOrder.user.address || '未填寫' }}</strong>
+                  </div>
+
+                  <div class="info-row">
+                    <span>備註</span>
+                    <strong>{{ tempOrder.message || '無備註' }}</strong>
                   </div>
                 </div>
 
-                <div v-else class="empty-box">尚無用戶資料</div>
+                <div v-else class="empty-box">
+                  尚無用戶資料
+                </div>
               </section>
             </div>
 
-            <!-- 訂單資訊 + 商品 -->
             <div class="col-lg-8">
               <section class="info-card mb-4">
                 <div class="section-title mb-4">
@@ -91,7 +94,7 @@
                   </span>
                   <div>
                     <h5 class="fw-bold mb-1">訂單資訊</h5>
-                    <p class="text-muted mb-0 small">訂單時間、付款狀態與總金額</p>
+                    <p class="text-muted mb-0 small">訂單時間、付款狀態與金額</p>
                   </div>
                 </div>
 
@@ -99,29 +102,35 @@
                   <div class="order-info-item">
                     <span>下單時間</span>
                     <strong>
-                      {{ tempOrder.create_at ? $filters.date(tempOrder.create_at) : "未取得時間" }}
+                      {{ tempOrder.create_at ? $filters.date(tempOrder.create_at) : '未取得時間' }}
                     </strong>
                   </div>
 
                   <div class="order-info-item">
                     <span>付款時間</span>
                     <strong>
-                      <template v-if="tempOrder.paid_date">
-                        {{ $filters.date(tempOrder.paid_date) }}
-                      </template>
-                      <template v-else> 尚未付款 </template>
+                      {{ tempOrder.paid_date ? $filters.date(tempOrder.paid_date) : '尚未付款' }}
                     </strong>
                   </div>
 
                   <div class="order-info-item">
                     <span>付款狀態</span>
-                    <strong :class="tempOrder.is_paid ? 'text-success' : 'text-muted'">
-                      {{ tempOrder.is_paid ? "已付款" : "尚未付款" }}
-                    </strong>
+
+                    <div class="form-check form-switch paid-switch">
+                      <input
+                        id="orderPaidSwitch"
+                        v-model="tempOrder.is_paid"
+                        class="form-check-input"
+                        type="checkbox"
+                      />
+                      <label class="form-check-label fw-bold" for="orderPaidSwitch">
+                        {{ tempOrder.is_paid ? '已付款' : '未付款' }}
+                      </label>
+                    </div>
                   </div>
 
                   <div class="order-info-item total">
-                    <span>總金額</span>
+                    <span>訂單總金額</span>
                     <strong>{{ $filters.currency(tempOrder.total || 0) }}</strong>
                   </div>
                 </div>
@@ -133,13 +142,13 @@
                     <i class="bi bi-bag-check"></i>
                   </span>
                   <div>
-                    <h5 class="fw-bold mb-1">選購商品</h5>
+                    <h5 class="fw-bold mb-1">選購料理</h5>
                     <p class="text-muted mb-0 small">本次訂單的餐點明細</p>
                   </div>
                 </div>
 
                 <div v-if="orderProducts.length" class="table-responsive">
-                  <table class="table align-middle order-table">
+                  <table class="table align-middle order-table mb-0">
                     <thead>
                       <tr>
                         <th>商品名稱</th>
@@ -154,11 +163,9 @@
                           <div class="product-name">
                             <span class="product-dot"></span>
                             <div>
-                              <strong>
-                                {{ item.product?.title || "未命名商品" }}
-                              </strong>
+                              <strong>{{ item.product?.title || '未命名商品' }}</strong>
                               <small class="text-muted d-block">
-                                {{ item.product?.category || "精選料理" }}
+                                {{ item.product?.category || '精選料理' }}
                               </small>
                             </div>
                           </div>
@@ -166,7 +173,7 @@
 
                         <td class="text-center">
                           <span class="qty-pill">
-                            {{ item.qty || 0 }} {{ item.product?.unit || "份" }}
+                            {{ item.qty || 0 }} {{ item.product?.unit || '份' }}
                           </span>
                         </td>
 
@@ -187,20 +194,21 @@
                   </table>
                 </div>
 
-                <div v-else class="empty-box">此訂單尚無商品資料</div>
+                <div v-else class="empty-box">
+                  此訂單尚無商品資料
+                </div>
               </section>
             </div>
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="modal-footer order-modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             關閉
           </button>
 
           <button type="button" class="btn btn-brand" @click="$emit('update-order', tempOrder)">
-            確認更新
+            儲存付款狀態
           </button>
         </div>
       </div>
@@ -209,7 +217,7 @@
 </template>
 
 <script>
-import modalMixin from '../mixins/modalMixins';
+import modalMixin from '@/mixins/modalMixins';
 
 export default {
   name: 'OrderModal',
@@ -225,7 +233,6 @@ export default {
   mixins: [modalMixin],
   data() {
     return {
-      status: {},
       modal: '',
       tempOrder: {
         products: [],
@@ -233,7 +240,6 @@ export default {
         total: 0,
         is_paid: false,
       },
-      isPaid: false,
     };
   },
   computed: {
@@ -254,15 +260,20 @@ export default {
       immediate: true,
       deep: true,
       handler() {
+        const isPaid = (
+          this.order.is_paid === true
+          || this.order.is_paid === 1
+          || this.order.is_paid === '1'
+          || this.order.is_paid === 'true'
+        );
+
         this.tempOrder = {
           products: [],
           user: {},
           total: 0,
-          is_paid: false,
           ...this.order,
+          is_paid: isPaid,
         };
-
-        this.isPaid = this.tempOrder.is_paid;
       },
     },
   },
@@ -281,21 +292,18 @@ export default {
   padding: 26px 32px;
   color: #ffffff;
   background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--brand-primary) 98%, transparent),
-      rgba(55, 38, 31, 0.98)
-    ),
-    #2b211e;
+    linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
   border-bottom: 0;
 }
 
 .modal-kicker {
   display: inline-block;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
   font-size: 12px;
   font-weight: 900;
-  letter-spacing: 1.5px;
-  opacity: 0.85;
+  letter-spacing: 1px;
 }
 
 .order-top-card {
@@ -317,9 +325,8 @@ export default {
 
 .pay-status {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 92px;
+  justify-content: center;
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 14px;
@@ -368,7 +375,8 @@ export default {
   gap: 12px;
 }
 
-.info-row {
+.info-row,
+.order-info-item {
   padding: 14px 16px;
   border-radius: 16px;
   background: var(--brand-bg-soft);
@@ -398,16 +406,20 @@ export default {
   gap: 14px;
 }
 
-.order-info-item {
-  padding: 16px;
-  border-radius: 18px;
-  background: var(--brand-bg-soft);
-  border: 1px solid var(--brand-border);
-}
-
 .order-info-item.total strong {
   color: var(--brand-primary);
   font-size: 22px;
+}
+
+.paid-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-check-input:checked {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
 }
 
 .order-table {
@@ -422,7 +434,8 @@ export default {
   font-size: 14px;
 }
 
-.order-table tbody td {
+.order-table tbody td,
+.order-table tfoot td {
   padding: 16px 12px;
   border-bottom: 1px solid var(--brand-border);
 }
@@ -443,7 +456,6 @@ export default {
 
 .qty-pill {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
   min-width: 72px;
   padding: 6px 12px;
@@ -475,7 +487,8 @@ export default {
 }
 
 .order-modal-footer .btn {
-  min-width: 108px;
+  min-width: 120px;
+  border-radius: 12px;
   font-weight: 800;
 }
 
@@ -507,6 +520,8 @@ export default {
   }
 
   .order-modal-footer {
+    display: grid;
+    grid-template-columns: 1fr;
     padding: 18px 22px;
   }
 

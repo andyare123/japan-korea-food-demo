@@ -47,11 +47,31 @@ const routes = [
     name: 'Favorites',
     component: () => import('../views/Favorite.vue'),
   },
-  // 後台訂單管理
+  {
+    path: '/orders/:orderId',
+    name: 'OrderDetail',
+    component: () => import('@/views/UserOrderDetail.vue'),
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/login.vue'),
+  },
+  {
+    path: '/admin/products',
+    name: 'AdminProducts',
+    component: () => import('../views/AdminProducts.vue'),
+  },
+  
   {
     path: '/admin/orders',
     name: 'AdminOrders',
     component: () => import('../views/AdminOrders.vue'),
+  },
+  {
+    path: '/admin/coupons',
+    name: 'AdminCoupons',
+    component: () => import('../views/AdminCoupons.vue'),
   },
 ];
 

@@ -3,17 +3,23 @@ module.exports = {
   env: {
     node: true,
     browser: true,
-    es6: true,
+    es2021: true,
   },
   extends: [
     'plugin:vue/vue3-essential',
-    'airbnb-base',
+    'eslint:recommended',
   ],
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@babel/eslint-parser',
+    ecmaVersion: 2021,
+    sourceType: 'module',
+    requireConfigFile: false,
   },
   rules: {
     'vue/multi-word-component-names': 'off',
-    'import/no-unresolved': 'off',
+    'vue/no-reserved-component-names': 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'linebreak-style': 'off',
   },
 };

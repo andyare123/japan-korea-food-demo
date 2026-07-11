@@ -94,7 +94,7 @@
         <div class="promo-card">
           <div>
             <span class="section-kicker">SPECIAL OFFER</span>
-            <h2 class="fw-bold mt-2 mb-3">輸入優惠碼，滿額現折</h2>
+            <h2 class="fw-bold mb-3">輸入優惠碼，滿額現折</h2>
             <p class="text-muted mb-0">
               購物車輸入優惠碼
               <strong class="text-brand">JPKR100</strong>
@@ -185,7 +185,7 @@
       <div class="container">
         <div class="newsletter-card text-center">
           <span class="section-kicker">NEWSLETTER</span>
-          <h2 class="fw-bold mt-2 mb-3">訂閱最新優惠與新品消息</h2>
+          <h2 class="fw-bold mb-3">訂閱最新優惠與新品消息</h2>
           <p class="text-muted mb-4">
             第一時間收到期間限定餐點、優惠券與人氣組合推薦。
           </p>
@@ -199,7 +199,7 @@
               placeholder="請輸入 Email"
             />
 
-            <button type="submit" class="btn btn-brand btn-lg">
+            <button type="submit" class="btn btn-brand btn-lg newsletter-submit-btn">
               訂閱
             </button>
 
@@ -333,6 +333,7 @@ export default {
 .hero-card-label,
 .section-kicker {
   display: inline-block;
+  margin-bottom: 14px;
   color: var(--brand-primary);
   background: var(--brand-primary-light);
   padding: 7px 12px;
@@ -465,7 +466,10 @@ export default {
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 0.25rem rgba(178, 58, 46, 0.16);
 }
-
+.newsletter-submit-btn {
+  min-width: 96px;
+  white-space: nowrap;
+}
 @media (max-width: 991px) {
   .promo-card {
     align-items: flex-start;
@@ -474,6 +478,10 @@ export default {
 
   .promo-card .btn {
     width: 100%;
+  }
+  .newsletter-submit-btn {
+    min-width: 96px;
+    white-space: nowrap;
   }
 }
 
@@ -500,6 +508,10 @@ export default {
   .newsletter-form .btn,
   .newsletter-form .form-control {
     width: 100%;
+  }
+  .newsletter-submit-btn {
+    min-width: 96px;
+    white-space: nowrap;
   }
 }
 </style>

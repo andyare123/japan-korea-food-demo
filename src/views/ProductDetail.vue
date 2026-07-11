@@ -11,19 +11,18 @@
         </div>
 
         <div v-if="product.id" class="detail-card">
-          <div class="row g-5 align-items-start">
-            <div class="col-lg-6">
-              <div
-                class="detail-img"
-                :style="{ backgroundImage: `url(${product.imageUrl || defaultImage})` }"
-              >
+          <div class="row g-5 align-items-stretch detail-main-row">
+            <div class="col-lg-6 detail-media-col">
+              <div class="detail-img">
+                <img
+                  :src="product.imageUrl || defaultImage"
+                  :alt="product.title || '料理詳情圖片'"
+                  class="detail-img-tag"
+                />
+
                 <span class="detail-category">
                   {{ product.category || "精選料理" }}
                 </span>
-
-                <button type="button" class="favorite-btn" @click="toggleFavorite(product)">
-                  {{ isFavorite(product.id) ? "❤️" : "🤍" }}
-                </button>
               </div>
             </div>
 
@@ -136,12 +135,21 @@
 
           <div v-if="recommendedProducts.length" class="row g-4">
             <div v-for="item in recommendedProducts" :key="item.id" class="col-md-6 col-lg-4">
-              <div class="recommend-card">
-                <div
-                  class="recommend-img"
-                  :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
-                >
-                  <button type="button" class="favorite-btn" @click="toggleFavorite(item)">
+              <div
+                class="recommend-card clickable-card"
+                role="button"
+                tabindex="0"
+                @click="goProductDetail(item.id)"
+                @keydown.enter="goProductDetail(item.id)"
+              >
+                <div class="recommend-img">
+                  <img
+                    :src="item.imageUrl || defaultImage"
+                    :alt="item.title || '推薦料理圖片'"
+                    class="recommend-img-tag"
+                  />
+
+                  <button type="button" class="favorite-btn" @click.stop="toggleFavorite(item)">
                     {{ isFavorite(item.id) ? "❤️" : "🤍" }}
                   </button>
                 </div>
@@ -179,15 +187,41 @@
                     <span class="h5 text-danger fw-bold"> NT$ {{ item.price }} </span>
                   </div>
 
-                  <div class="d-flex gap-2">
-                  <router-link :to="`/product/${item.id}`" class="btn btn-outline-brand flex-fill">
-                      查看詳情
-                  </router-link>
+                  <div class="recommend-actions">
+                    <div class="input-group input-group-sm recommend-qty-control">
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        @click.stop="decreaseRecommendedQty(item.id)"
+                      >
+                        -
+                      </button>
+
+                      <input
+                        type="number"
+                        class="form-control text-center"
+                        min="1"
+                        v-model.number="recommendedQty[item.id]"
+                        @click.stop
+                      />
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        @click.stop="increaseRecommendedQty(item.id)"
+                      >
+                        +
+                      </button>
+
+                      <span class="input-group-text">
+                        {{ item.unit || "份" }}
+                      </span>
+                    </div>
 
                     <button
                       type="button"
-                      class="btn btn-brand flex-fill"
-                      @click="addRecommendedToCart(item)"
+                      class="btn btn-brand recommend-cart-btn"
+                      @click.stop="addRecommendedToCart(item)"
                     >
                       加入購物車
                     </button>
@@ -221,6 +255,7 @@ export default {
       products: [],
       favorites: JSON.parse(localStorage.getItem('favoriteFoods')) || [],
       qty: 1,
+      recommendedQty: {},
       isLoading: false,
       defaultImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
     };
@@ -306,6 +341,12 @@ export default {
         .get(`${VUE_APP_API}/api/${VUE_APP_PATH}/products/all`)
         .then((res) => {
           this.products = res.data.products || [];
+
+          this.products.forEach((item) => {
+            if (!this.recommendedQty[item.id]) {
+              this.recommendedQty[item.id] = 1;
+            }
+          });
         })
         .catch(() => {
           this.pushToast('取得推薦料理失敗', '請稍後再試，或重新整理頁面。', 'danger');
@@ -324,7 +365,25 @@ export default {
 
       this.qty -= 1;
     },
+    goProductDetail(id) {
+      this.$router.push(`/product/${id}`);
+    },
+    increaseRecommendedQty(id) {
+      if (!this.recommendedQty[id]) {
+        this.recommendedQty[id] = 1;
+      }
 
+      this.recommendedQty[id] += 1;
+    },
+
+    decreaseRecommendedQty(id) {
+      if (!this.recommendedQty[id] || this.recommendedQty[id] <= 1) {
+        this.recommendedQty[id] = 1;
+        return;
+      }
+
+      this.recommendedQty[id] -= 1;
+    },
     addToCart(id) {
       const qty = Number(this.qty) || 1;
 
@@ -366,9 +425,17 @@ export default {
     },
 
     addRecommendedToCart(item) {
+      const qty = Number(this.recommendedQty[item.id]) || 1;
+
+      if (qty < 1) {
+        this.recommendedQty[item.id] = 1;
+        this.pushToast('數量錯誤', '餐點數量至少需要 1 份。', 'warning');
+        return;
+      }
+
       const data = {
         product_id: item.id,
-        qty: 1,
+        qty,
       };
 
       this.isLoading = true;
@@ -381,7 +448,7 @@ export default {
 
             this.pushToast(
               '已加入購物車',
-              `已成功加入 1 ${item.unit || '份'} ${item.title || '餐點'}。`,
+              `已成功加入 ${qty} ${item.unit || '份'} ${item.title || '餐點'}。`,
               'success',
             );
           } else {
@@ -536,15 +603,29 @@ export default {
   box-shadow: 0 18px 45px rgba(120, 54, 28, 0.1);
 }
 
+.detail-main-row {
+  align-items: stretch !important;
+}
+
+.detail-media-col {
+  display: flex;
+}
+
 .detail-img {
   position: relative;
-  min-height: 480px;
-  border-radius: 28px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--brand-primary-light);
-  border: 1px solid var(--brand-border);
+  flex: 1;
+  width: 100%;
+  height: 720px;
   overflow: hidden;
+  border-radius: 28px;
+  background: #fff4ec;
+}
+
+.detail-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .detail-category {
@@ -681,9 +762,15 @@ export default {
 .recommend-img {
   position: relative;
   height: 220px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--brand-primary-light);
+  overflow: hidden;
+  background: #fff4ec;
+}
+
+.recommend-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .recommend-desc {
@@ -705,9 +792,51 @@ export default {
   border: 1px dashed var(--brand-border);
 }
 
+.recommend-actions {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, auto);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.recommend-qty-control {
+  min-width: 0;
+}
+
+.recommend-qty-control .form-control {
+  font-weight: 800;
+}
+
+.recommend-cart-btn {
+  min-height: 42px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:focus {
+  outline: 3px solid rgba(178, 58, 46, 0.22);
+  outline-offset: 4px;
+}
+
+.recommend-actions .btn {
+  min-height: 42px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 @media (max-width: 991px) {
+  .detail-media-col {
+    display: block;
+  }
+
   .detail-img {
-    min-height: 360px;
+    height: 750px;
+    min-height: 750px;
   }
 
   .price-box {
@@ -737,7 +866,8 @@ export default {
   }
 
   .detail-img {
-    min-height: 300px;
+    height: 420px;
+    min-height: 420px;
     border-radius: 22px;
   }
 
@@ -747,6 +877,13 @@ export default {
 
   .qty-control {
     max-width: 100%;
+  }
+  .recommend-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .recommend-cart-btn {
+    width: 100%;
   }
 }
 </style>

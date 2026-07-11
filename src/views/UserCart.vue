@@ -37,10 +37,13 @@
                   <i class="bi bi-x"></i>
                 </button>
 
-                <div
-                  class="cart-thumb"
-                  :style="{ backgroundImage: `url(${item.product?.imageUrl || defaultImage})` }"
-                ></div>
+                <div class="cart-thumb">
+                  <img
+                    :src="item.product?.imageUrl || defaultImage"
+                    :alt="item.product?.title || '購物車餐點圖片'"
+                    class="cart-thumb-img"
+                  />
+                </div>
 
                 <div class="cart-info">
                   <div class="d-flex align-items-center gap-2 mb-1">
@@ -90,82 +93,84 @@
                 還沒有加入任何日韓料理，先回到料理列表挑選想吃的餐點吧。
               </p>
 
-              <router-link to="/products" class="btn btn-brand">
+              <router-link to="/products" class="btn btn-brand empty-cart-cta">
                 <i class="bi bi-search me-1"></i>
                 前往挑選料理
               </router-link>
             </div>
 
-            <!-- 金額 -->
-            <div class="cart-summary mt-4">
-              <div class="d-flex justify-content-between mb-2">
-                <span>餐點小計</span>
-                <strong>{{ $filters.currency(cart.total || 0) }}</strong>
+            <div v-if="cart.carts && cart.carts.length">
+              <!-- 金額 -->
+              <div class="cart-summary mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>餐點小計</span>
+                  <strong>{{ $filters.currency(cart.total || 0) }}</strong>
+                </div>
+
+                <div
+                  class="d-flex justify-content-between text-success"
+                  v-if="cart.final_total !== cart.total"
+                >
+                  <span>優惠後金額</span>
+                  <strong>{{ $filters.currency(cart.final_total || 0) }}</strong>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between total-line">
+                  <span>應付總額</span>
+                  <strong>{{ $filters.currency(cart.final_total || cart.total || 0) }}</strong>
+                </div>
               </div>
 
-              <div
-                class="d-flex justify-content-between text-success"
-                v-if="cart.final_total !== cart.total"
-              >
-                <span>優惠後金額</span>
-                <strong>{{ $filters.currency(cart.final_total || 0) }}</strong>
+              <!-- 優惠券介紹 -->
+              <div class="coupon-box mt-4 mb-3">
+                <div>
+                  <h5 class="fw-bold mb-1">日韓美食優惠券</h5>
+                  <p class="mb-0 text-muted">
+                    輸入優惠碼
+                    <strong class="text-brand">JPKR100</strong>
+                    ，滿額享折扣優惠。
+                  </p>
+                </div>
               </div>
 
-              <hr />
+              <!-- 優惠券輸入 -->
+              <div class="input-group mb-3 coupon-input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model.trim="coupon_code"
+                  placeholder="請輸入優惠碼"
+                  @keyup.enter="addCouponCode"
+                />
 
-              <div class="d-flex justify-content-between total-line">
-                <span>應付總額</span>
-                <strong>{{ $filters.currency(cart.final_total || cart.total || 0) }}</strong>
+                <button
+                  class="btn btn-outline-brand"
+                  type="button"
+                  :disabled="isLoading || !cart.carts.length"
+                  @click="addCouponCode"
+                >
+                  套用優惠碼
+                </button>
               </div>
-            </div>
 
-            <!-- 優惠券介紹 -->
-            <div class="coupon-box mt-4 mb-3">
-              <div>
-                <h5 class="fw-bold mb-1">日韓美食優惠券</h5>
-                <p class="mb-0 text-muted">
-                  輸入優惠碼
-                  <strong class="text-brand">JPKR100</strong>
-                  ，滿額享折扣優惠。
-                </p>
+              <div class="cart-action-row mt-4">
+                <router-link to="/products" class="btn btn-outline-brand btn-lg continue-shopping-btn">
+                  <i class="bi bi-arrow-left me-1"></i>
+                  繼續挑選日韓料理
+                </router-link>
+
+                <button
+                  type="button"
+                  class="btn btn-brand btn-lg next-checkout-btn"
+                  :disabled="!cart.carts || !cart.carts.length"
+                  @click="goCheckoutProcess"
+                >
+                  下一步，完成訂購流程
+                  <i class="bi bi-arrow-right ms-1"></i>
+                </button>
               </div>
-            </div>
-
-            <!-- 優惠券輸入 -->
-            <div class="input-group mb-3 coupon-input-group">
-              <input
-                type="text"
-                class="form-control"
-                v-model.trim="coupon_code"
-                placeholder="請輸入優惠碼"
-                @keyup.enter="addCouponCode"
-              />
-
-              <button
-                class="btn btn-outline-brand"
-                type="button"
-                :disabled="isLoading || !cart.carts.length"
-                @click="addCouponCode"
-              >
-                套用優惠碼
-              </button>
-            </div>
-
-            <div class="cart-action-row mt-4">
-              <router-link to="/products" class="btn btn-outline-brand btn-lg continue-shopping-btn">
-                <i class="bi bi-arrow-left me-1"></i>
-                繼續挑選日韓料理
-              </router-link>
-
-              <button
-                type="button"
-                class="btn btn-brand btn-lg next-checkout-btn"
-                :disabled="!cart.carts || !cart.carts.length"
-                @click="goCheckoutProcess"
-              >
-                下一步，完成訂購流程
-                <i class="bi bi-arrow-right ms-1"></i>
-              </button>
             </div>
           </div>
         </div>
@@ -475,7 +480,10 @@ export default {
 .cart-price {
   flex: 0 0 98px;
 }
-
+.empty-cart-cta,
+.empty-cart-cta i {
+  color: #ffffff !important;
+}
 .empty-cart {
   padding: 34px 20px;
   border-radius: 22px;
@@ -544,7 +552,22 @@ export default {
 .next-checkout-btn {
   font-size: 20px;
 }
+.cart-thumb {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--brand-primary-light);
+  border: 1px solid var(--brand-border);
+}
 
+.cart-thumb-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
 @media (max-width: 768px) {
   .container {
     padding-left: 18px;

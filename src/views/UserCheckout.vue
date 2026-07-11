@@ -30,10 +30,13 @@
 
             <div v-if="orderProducts.length">
               <div v-for="item in orderProducts" :key="item.id" class="order-item">
-                <div
-                  class="order-img"
-                  :style="{ backgroundImage: `url(${item.product?.imageUrl || defaultImage})` }"
-                ></div>
+                <div class="order-img">
+                  <img
+                    :src="item.product?.imageUrl || defaultImage"
+                    :alt="item.product?.title || '訂單餐點圖片'"
+                    class="order-img-tag"
+                  />
+                </div>
 
                 <div class="order-info">
                   <span class="food-category">
@@ -279,8 +282,6 @@ export default {
       this.$http
         .post(url)
         .then((res) => {
-          this.$httpMessageState(res, '付款');
-
           if (res.data.success) {
             this.order.is_paid = true;
 
@@ -297,12 +298,7 @@ export default {
             emitter.emit('cart-updated');
 
             setTimeout(() => {
-              this.$router.push({
-                path: '/admin/orders',
-                query: {
-                  orderId: this.orderId,
-                },
-              });
+              this.$router.push(`/orders/${this.orderId}`);
             }, 1500);
           } else {
             this.pushToast('付款失敗', res.data.message || '請稍後再試。', 'danger');
@@ -409,10 +405,16 @@ export default {
   width: 90px;
   height: 90px;
   border-radius: 22px;
-  background-size: cover;
-  background-position: center;
-  background-color: #fff4ec;
+  overflow: hidden;
+  background: #fff4ec;
   border: 1px solid #f1d8ca;
+}
+
+.order-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .order-info {

@@ -39,9 +39,13 @@
             @mouseleave="showFavoritePreview = false"
           >
             <router-link class="nav-link icon-link" to="/favorites" @click="closeMobileNavbar">
-              <i class="bi bi-heart-fill me-1"></i> 我的最愛
-              <span v-if="favoriteCount > 0" class="nav-badge favorite-badge">
-                {{ favoriteCount }}
+              <i class="bi bi-heart-fill me-1"></i>
+
+              <span class="nav-text-with-badge">
+                我的最愛
+                <span v-if="favoriteCount > 0" class="nav-badge favorite-badge">
+                  {{ favoriteCount }}
+                </span>
               </span>
             </router-link>
 
@@ -53,10 +57,13 @@
 
               <div v-if="favorites.length">
                 <div v-for="item in favorites" :key="item.id" class="preview-item">
-                  <div
-                    class="preview-img"
-                    :style="{ backgroundImage: `url(${item.imageUrl || defaultImage})` }"
-                  ></div>
+                  <div class="preview-img">
+                    <img
+                      :src="item.imageUrl || defaultImage"
+                      :alt="item.title || '收藏料理圖片'"
+                      class="preview-img-tag"
+                    />
+                  </div>
 
                   <div class="preview-info">
                     <router-link class="preview-title" :to="`/product/${item.id}`">
@@ -118,9 +125,12 @@
           >
             <router-link class="nav-link icon-link" to="/user/cart" @click="closeMobileNavbar">
               <i class="bi bi-bag-heart-fill me-1"></i>
-              購物車
-              <span v-if="cartCount > 0" class="nav-badge">
-                {{ cartCount }}
+
+              <span class="nav-text-with-badge">
+                購物車
+                <span v-if="cartCount > 0" class="nav-badge">
+                  {{ cartCount }}
+                </span>
               </span>
             </router-link>
 
@@ -136,10 +146,13 @@
                   :key="item.id"
                   class="preview-item cart-preview-item"
                 >
-                  <div
-                    class="preview-img"
-                    :style="{ backgroundImage: `url(${item.product.imageUrl || defaultImage})` }"
-                  ></div>
+                  <div class="preview-img">
+                    <img
+                      :src="item.product.imageUrl || defaultImage"
+                      :alt="item.product.title || '購物車餐點圖片'"
+                      class="preview-img-tag"
+                    />
+                  </div>
 
                   <div class="preview-info">
                     <router-link
@@ -227,11 +240,18 @@
             @mouseenter="openOrderPreview"
             @mouseleave="showOrderPreview = false"
           >
-            <router-link class="nav-link icon-link" to="/admin/orders" @click="closeMobileNavbar">
+              <router-link
+                class="nav-link icon-link"
+                :to="latestPaidOrderId ? `/orders/${latestPaidOrderId}` : '/user/cart'"
+                @click="closeMobileNavbar"
+              >
               <i class="bi bi-receipt-cutoff me-1"></i>
-              訂單查詢
-              <span v-if="orderCount > 0" class="nav-badge order-badge">
-                {{ orderCount }}
+
+              <span class="nav-text-with-badge">
+                訂單明細
+                <span v-if="orderCount > 0" class="nav-badge order-badge">
+                  {{ orderCount }}
+                </span>
               </span>
             </router-link>
 
@@ -264,7 +284,7 @@
                   </div>
 
                   <div class="preview-info">
-                    <router-link class="preview-title" to="/admin/orders">
+                    <router-link class="preview-title" :to="`/orders/${item.id}`">
                       {{ item.user?.name || "未填寫姓名" }}
                     </router-link>
 
@@ -283,16 +303,16 @@
                     </div>
                   </div>
 
-                  <router-link to="/admin/orders" class="btn btn-outline-brand btn-sm">
+                  <router-link :to="`/orders/${item.id}`" class="btn btn-outline-brand btn-sm">
                     查看
                   </router-link>
                 </div>
                 <router-link
-                  to="/admin/orders"
+                  :to="latestPaidOrderId ? `/orders/${latestPaidOrderId}` : '/user/cart'"
                   class="btn btn-danger w-100 mt-3"
                   @click="closeMobileNavbar"
                 >
-                  查看全部訂單
+                  查看訂單明細
                 </router-link>
               </div>
 
@@ -308,6 +328,33 @@
                 </router-link>
               </div>
             </div>
+          </li>
+         <li v-if="!isAdminLogin" class="nav-item">
+            <router-link class="nav-link" to="/login" @click="closeMobileNavbar">
+              後台登入
+            </router-link>
+          </li>
+
+          <li v-if="isAdminLogin" class="nav-item">
+            <router-link class="nav-link" to="/admin/products" @click="closeMobileNavbar">
+              商品管理
+            </router-link>
+          </li>
+
+          <li v-if="isAdminLogin" class="nav-item">
+            <router-link class="nav-link" to="/admin/coupons" @click="closeMobileNavbar">
+              優惠券管理
+            </router-link>
+          </li>
+          <li v-if="isAdminLogin" class="nav-item">
+            <router-link class="nav-link" to="/admin/orders" @click="closeMobileNavbar">
+              訂單檢視
+            </router-link>
+          </li>
+          <li v-if="isAdminLogin" class="nav-item">
+            <button type="button" class="nav-link logout-link" @click="adminLogout">
+              後台登出
+            </button>
           </li>
         </ul>
       </div>
@@ -337,6 +384,7 @@ export default {
       isOrderDisplayCleared: localStorage.getItem('orderDisplayCleared') === '1',
       defaultImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
       isNavbarOpen: false,
+      isAdminLogin: false,
       status: {
         loadingItem: '',
       },
@@ -393,7 +441,27 @@ export default {
       this.showFavoritePreview = false;
       this.showOrderPreview = false;
     },
+    checkAdminLogin() {
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('hexToken='));
 
+      this.isAdminLogin = !!token;
+    },
+
+    adminLogout() {
+      document.cookie = 'hexToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+      this.isAdminLogin = false;
+
+      this.pushToast('已登出後台', '期待您下次回來管理和韓食堂。', 'warning');
+
+      this.closeMobileNavbar();
+
+      if (this.$route.path.startsWith('/admin')) {
+        this.$router.push('/login');
+      }
+    },
     pushToast(title, content = '', style = 'danger') {
       emitter.emit('push-message', {
         style,
@@ -676,7 +744,9 @@ export default {
   mounted() {
     this.getCart();
     this.getFavorites();
-
+    this.getCart();
+    this.getFavorites();
+    this.checkAdminLogin();
     if (!this.isOrderDisplayCleared && this.latestPaidOrderId) {
       this.getOnlyPaidOrder(this.latestPaidOrderId);
     } else {
@@ -688,6 +758,7 @@ export default {
     emitter.on('orders-updated', this.getOrders);
     emitter.on('orders-display-reset', this.handleOrdersDisplayReset);
     emitter.on('orders-cleared', this.handleOrdersCleared);
+    emitter.on('admin-login-updated', this.checkAdminLogin);
   },
   beforeUnmount() {
     emitter.off('cart-updated', this.getCart);
@@ -695,6 +766,7 @@ export default {
     emitter.off('orders-updated', this.getOrders);
     emitter.off('orders-display-reset', this.handleOrdersDisplayReset);
     emitter.off('orders-cleared', this.handleOrdersCleared);
+    emitter.off('admin-login-updated', this.checkAdminLogin);
   },
 };
 </script>
@@ -770,11 +842,16 @@ export default {
   font-size: 16px;
   transform: translateY(1px);
 }
-
+.nav-text-with-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
 .nav-badge {
   position: absolute;
-  top: -7px;
-  right: -14px;
+  top: -10px;
+  right: -18px;
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
@@ -852,9 +929,15 @@ export default {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background-size: cover;
-  background-position: center;
-  background-color: #fff4ec;
+  overflow: hidden;
+  background: #fff4ec;
+}
+
+.preview-img-tag {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .preview-info {
@@ -965,7 +1048,16 @@ export default {
 .hero-section {
   padding-top: 16px;
 }
+.logout-link {
+  border: 0;
+  background: transparent;
+  color: var(--brand-text);
+  font-weight: 700;
+}
 
+.logout-link:hover {
+  color: var(--brand-primary) !important;
+}
 @media (max-width: 991px) {
   .main-navbar {
     position: sticky;
@@ -1024,6 +1116,29 @@ export default {
     max-height: none;
     margin-top: 8px;
     box-shadow: none;
+  }
+   .icon-link {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .nav-text-with-badge {
+    width: auto;
+  }
+  .logout-link {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border-radius: 14px;
+    text-align: left;
+  }
+
+  .logout-link:hover {
+    background: var(--brand-primary-light);
+  }
+  .nav-badge {
+    top: -9px;
+    right: -20px;
   }
 }
 @media (max-width: 768px) {
