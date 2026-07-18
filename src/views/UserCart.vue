@@ -201,14 +201,6 @@ export default {
     };
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     getCart() {
       const url = `${VUE_APP_API}/api/${VUE_APP_PATH}/cart`;
 

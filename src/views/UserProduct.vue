@@ -21,6 +21,7 @@
 
     <div class="category-tabs mb-4">
       <button
+        type="button"
         class="btn category-btn"
         :class="{ active: selectedCategory === '全部' }"
         @click="changeCategory('全部')"
@@ -29,6 +30,7 @@
       </button>
 
       <button
+        type="button"
         class="btn category-btn"
         :class="{ active: selectedCategory === '日式料理' }"
         @click="changeCategory('日式料理')"
@@ -37,6 +39,7 @@
       </button>
 
       <button
+        type="button"
         class="btn category-btn"
         :class="{ active: selectedCategory === '韓式料理' }"
         @click="changeCategory('韓式料理')"
@@ -220,14 +223,9 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
+    getFavorites() {
+      this.favorites = JSON.parse(localStorage.getItem('favoriteFoods')) || [];
     },
-
     getProducts() {
       this.isLoading = true;
 
@@ -249,9 +247,6 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
-    },
-    getFavorites() {
-      this.favorites = JSON.parse(localStorage.getItem('favoriteFoods')) || [];
     },
     changeCategory(category) {
       this.selectedCategory = category;
@@ -333,7 +328,9 @@ export default {
     },
 
     toggleFavorite(item) {
-      const index = this.favorites.findIndex((food) => food.id === item.id);
+      const index = this.favorites.findIndex(
+        (food) => String(food.id) === String(item.id),
+      );
 
       if (index === -1) {
         this.favorites.push(item);
@@ -354,6 +351,7 @@ export default {
     },
   },
   mounted() {
+    this.getProduct();
     this.getProducts();
     this.getFavorites();
 

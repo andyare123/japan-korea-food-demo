@@ -1,21 +1,17 @@
-/*  func-names */
-// -next-line import/extensions
-import emitter from "./emitter.js";
+import { pushToast } from '@/mixins/toastMixin';
 
-export default function (response, title = "更新") {
-  if (response.data.success) {
-    emitter.emit("push-message", {
-      style: "success",
-      title: `${title}成功`,
-    });
+export default function $httpMessageState(response, title = '更新') {
+  if (response?.data?.success) {
+    pushToast(
+      `${title}成功`,
+      response.data.message || '操作已完成。',
+      'success',
+    );
   } else {
-    // 有些訊息是字串，有些則是陣列，在此統一格式
-    const message =
-      typeof response.data.message === "string" ? [response.data.message] : response.data.message;
-    emitter.emit("push-message", {
-      style: "danger",
-      title: `${title}失敗`,
-      content: message.join("、"),
-    });
+    pushToast(
+      `${title}失敗`,
+      response?.data?.message || '操作失敗，請稍後再試。',
+      'danger',
+    );
   }
 }

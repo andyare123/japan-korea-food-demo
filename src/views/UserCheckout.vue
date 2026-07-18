@@ -219,14 +219,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     getOrder() {
       if (!this.orderId) {
         this.pushToast('找不到訂單編號', '請先從購物車建立訂單，再前往付款頁。', 'warning');

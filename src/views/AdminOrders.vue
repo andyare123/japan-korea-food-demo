@@ -138,7 +138,7 @@
                   <button
                     type="button"
                     class="btn btn-outline-brand btn-sm view-btn"
-                    @click="openModal(false, item)"
+                    @click="openModal(item)"
                   >
                     <i class="bi bi-eye me-1"></i>
                     檢視
@@ -174,7 +174,7 @@
                 type="button"
                 class="mobile-view-btn"
                 aria-label="檢視訂單"
-                @click="openModal(false, item)"
+                @click="openModal(item)"
               >
                 <i class="bi bi-chevron-right"></i>
               </button>
@@ -233,7 +233,6 @@
 <script>
 import OrderModal from '@/components/OrderModal.vue';
 import Pagination from '@/components/Pagination.vue';
-import emitter from '@/methods/emitter';
 
 export default {
   name: 'AdminOrders',
@@ -251,7 +250,6 @@ export default {
         has_next: false,
       },
       currentPage: 1,
-      isNew: false,
       isLoading: false,
       tempOrder: {},
     };
@@ -278,14 +276,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     isOrderPaid(order) {
       return (
         order.is_paid === true
@@ -336,13 +326,11 @@ export default {
         });
     },
 
-    openModal(isNew, item) {
+    openModal(item) {
       this.tempOrder = {
         ...item,
         is_paid: this.isOrderPaid(item),
       };
-
-      this.isNew = isNew;
 
       this.$refs.orderModal.showModal();
     },

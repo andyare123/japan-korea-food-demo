@@ -329,32 +329,16 @@
               </div>
             </div>
           </li>
-         <li v-if="!isAdminLogin" class="nav-item">
+          <li v-if="!isAdminLogin" class="nav-item">
             <router-link class="nav-link" to="/login" @click="closeMobileNavbar">
               後台登入
             </router-link>
           </li>
 
-          <li v-if="isAdminLogin" class="nav-item">
+          <li v-else class="nav-item">
             <router-link class="nav-link" to="/admin/products" @click="closeMobileNavbar">
-              商品管理
+              進入後台
             </router-link>
-          </li>
-
-          <li v-if="isAdminLogin" class="nav-item">
-            <router-link class="nav-link" to="/admin/coupons" @click="closeMobileNavbar">
-              優惠券管理
-            </router-link>
-          </li>
-          <li v-if="isAdminLogin" class="nav-item">
-            <router-link class="nav-link" to="/admin/orders" @click="closeMobileNavbar">
-              訂單檢視
-            </router-link>
-          </li>
-          <li v-if="isAdminLogin" class="nav-item">
-            <button type="button" class="nav-link logout-link" @click="adminLogout">
-              後台登出
-            </button>
           </li>
         </ul>
       </div>
@@ -462,14 +446,6 @@ export default {
         this.$router.push('/login');
       }
     },
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     addFavoriteToCart(item) {
       if (!item || !item.id) {
         this.pushToast(
@@ -742,8 +718,6 @@ export default {
     },
   },
   mounted() {
-    this.getCart();
-    this.getFavorites();
     this.getCart();
     this.getFavorites();
     this.checkAdminLogin();

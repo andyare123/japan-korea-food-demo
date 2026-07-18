@@ -293,14 +293,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     getProduct() {
       if (!this.productId) {
         this.product = {};

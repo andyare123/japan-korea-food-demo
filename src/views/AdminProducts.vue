@@ -97,11 +97,10 @@
                       <i class="bi bi-pencil-square me-1"></i>
                       編輯
                     </button>
-
                     <button
                       type="button"
                       class="btn btn-outline-danger btn-sm"
-                      @click="deleteProduct(item)"
+                      @click="openDelModal(item)"
                     >
                       <i class="bi bi-trash me-1"></i>
                       刪除
@@ -297,12 +296,17 @@
       </div>
     </div>
   </div>
+  <DelModal
+    ref="delModal"
+    :item="tempProduct"
+    @del-item="deleteProduct"
+  />
 </template>
 
 <script>
 import Modal from 'bootstrap/js/dist/modal';
 import Pagination from '@/components/Pagination.vue';
-import emitter from '@/methods/emitter';
+import DelModal from '@/components/DelModal.vue';
 
 const { VUE_APP_API, VUE_APP_PATH } = process.env;
 
@@ -310,6 +314,7 @@ export default {
   name: 'AdminProducts',
   components: {
     Pagination,
+    DelModal,
   },
   data() {
     return {
@@ -360,14 +365,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     getProducts() {
       this.isLoading = true;
 
@@ -430,7 +427,10 @@ export default {
     hideModal() {
       this.productModal.hide();
     },
-
+    openDelModal(item) {
+      this.tempProduct = { ...item };
+      this.$refs.delModal.showModal();
+    },
     updateProduct() {
       let url = `${VUE_APP_API}/api/${VUE_APP_PATH}/admin/product`;
       let httpMethod = 'post';
@@ -465,10 +465,11 @@ export default {
         });
     },
 
-    deleteProduct(item) {
-      const confirmDelete = window.confirm(`確定要刪除「${item.title}」嗎？`);
+    deleteProduct() {
+      const item = this.tempProduct;
 
-      if (!confirmDelete) {
+      if (!item || !item.id) {
+        this.pushToast('刪除料理失敗', '找不到料理資料，無法刪除。', 'warning');
         return;
       }
 
@@ -479,6 +480,8 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.pushToast('刪除料理成功', `${item.title || '料理'} 已刪除。`, 'success');
+
+            this.$refs.delModal.hideModal();
             this.getProducts();
           } else {
             this.pushToast('刪除料理失敗', res.data.message || '請稍後再試。', 'danger');

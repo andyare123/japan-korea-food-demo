@@ -268,13 +268,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
     increaseRecommendQty(id) {
       if (!this.recommendedQty[id]) {
         this.recommendedQty[id] = 1;

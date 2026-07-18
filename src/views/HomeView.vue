@@ -214,7 +214,6 @@
 </template>
 
 <script>
-import emitter from '../methods/emitter';
 
 export default {
   name: 'HomeView',
@@ -251,14 +250,6 @@ export default {
     };
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     subscribeNewsletter() {
       const email = this.newsletterEmail.trim();
 

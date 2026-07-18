@@ -187,8 +187,6 @@
 </template>
 
 <script>
-import emitter from '@/methods/emitter';
-
 export default {
   name: 'UserOrderDetail',
   data() {
@@ -214,14 +212,6 @@ export default {
     },
   },
   methods: {
-    pushToast(title, content = '', style = 'danger') {
-      emitter.emit('push-message', {
-        style,
-        title,
-        content,
-      });
-    },
-
     isOrderPaid(order) {
       return (
         order.is_paid === true

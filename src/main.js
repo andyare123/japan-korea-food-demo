@@ -19,6 +19,7 @@ import App from './App.vue';
 import router from './router';
 import { currency, date } from './methods/filters';
 import $httpMessageState from './methods/pushMessageState';
+import toastMixin from './mixins/toastMixin';
 
 axios.defaults.withCredentials = true;
 
@@ -56,6 +57,8 @@ configure({
 setLocale('zh_TW');
 
 const app = createApp(App);
+
+app.mixin(toastMixin);
 
 app.config.globalProperties.$filters = {
   date,
