@@ -329,17 +329,6 @@
               </div>
             </div>
           </li>
-          <li v-if="!isAdminLogin" class="nav-item">
-            <router-link class="nav-link" to="/login" @click="closeMobileNavbar">
-              後台登入
-            </router-link>
-          </li>
-
-          <li v-else class="nav-item">
-            <router-link class="nav-link" to="/admin/products" @click="closeMobileNavbar">
-              進入後台
-            </router-link>
-          </li>
         </ul>
       </div>
     </div>
@@ -368,7 +357,6 @@ export default {
       isOrderDisplayCleared: localStorage.getItem('orderDisplayCleared') === '1',
       defaultImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
       isNavbarOpen: false,
-      isAdminLogin: false,
       status: {
         loadingItem: '',
       },
@@ -424,27 +412,6 @@ export default {
       this.showCartPreview = false;
       this.showFavoritePreview = false;
       this.showOrderPreview = false;
-    },
-    checkAdminLogin() {
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('hexToken='));
-
-      this.isAdminLogin = !!token;
-    },
-
-    adminLogout() {
-      document.cookie = 'hexToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-      this.isAdminLogin = false;
-
-      this.pushToast('已登出後台', '期待您下次回來管理和韓食堂。', 'warning');
-
-      this.closeMobileNavbar();
-
-      if (this.$route.path.startsWith('/admin')) {
-        this.$router.push('/login');
-      }
     },
     addFavoriteToCart(item) {
       if (!item || !item.id) {
@@ -732,7 +699,6 @@ export default {
     emitter.on('orders-updated', this.getOrders);
     emitter.on('orders-display-reset', this.handleOrdersDisplayReset);
     emitter.on('orders-cleared', this.handleOrdersCleared);
-    emitter.on('admin-login-updated', this.checkAdminLogin);
   },
   beforeUnmount() {
     emitter.off('cart-updated', this.getCart);
@@ -740,7 +706,6 @@ export default {
     emitter.off('orders-updated', this.getOrders);
     emitter.off('orders-display-reset', this.handleOrdersDisplayReset);
     emitter.off('orders-cleared', this.handleOrdersCleared);
-    emitter.off('admin-login-updated', this.checkAdminLogin);
   },
 };
 </script>

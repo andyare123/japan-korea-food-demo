@@ -5,8 +5,28 @@
 
 ## Demo
 
-GitHub Pages：  
+### 前台網站
+
+前台首頁：  
 https://andyare123.github.io/japan-korea-food-demo/
+
+前台功能包含料理瀏覽、商品詳情、我的最愛、購物車、結帳流程、付款確認與訂單查詢。
+
+### 後台管理
+
+後台登入：  
+https://andyare123.github.io/japan-korea-food-demo/#/login
+
+登入後可進入以下管理頁面：
+
+- 商品管理：  
+  https://andyare123.github.io/japan-korea-food-demo/#/admin/products
+
+- 優惠券管理：  
+  https://andyare123.github.io/japan-korea-food-demo/#/admin/coupons
+
+- 訂單檢視：  
+  https://andyare123.github.io/japan-korea-food-demo/#/admin/orders
 
 ## 專案功能
 
@@ -32,23 +52,3 @@ https://andyare123.github.io/japan-korea-food-demo/
 - 優惠券管理
 - 訂單查詢
 - 付款狀態檢視
-
-## 使用技術
-
-- Vue 3
-- Vue CLI
-- Vue Router
-- Axios
-- Bootstrap 5
-- Bootstrap Icons
-- VeeValidate
-- Vue Loading Overlay
-- localStorage
-- HexSchool Vue Course API
-
-## 專案安裝
-
-請先確認已安裝 Node.js 與 npm。
-
-```bash
-npm install

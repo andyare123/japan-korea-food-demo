@@ -632,7 +632,19 @@ export default {
   background: #f1e4dc;
 }
 
+.action-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
 .action-group .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 68px;
+  white-space: nowrap;
   font-weight: 800;
 }
 
@@ -752,7 +764,32 @@ export default {
   border-radius: 12px;
   font-weight: 800;
 }
+.category-pill {
+  white-space: nowrap;
+}
 
+.action-group {
+  flex-wrap: nowrap;
+}
+
+.action-group .btn {
+  white-space: nowrap;
+  min-width: 64px;
+}
+
+.admin-product-table th,
+.admin-product-table td {
+  white-space: nowrap;
+}
+
+.product-title,
+.product-desc {
+  white-space: normal;
+}
+
+.product-desc {
+  min-width: 220px;
+}
 @media (max-width: 768px) {
   .admin-hero {
     flex-direction: column;
