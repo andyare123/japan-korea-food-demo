@@ -351,7 +351,6 @@ export default {
     },
   },
   mounted() {
-    this.getProduct();
     this.getProducts();
     this.getFavorites();
 

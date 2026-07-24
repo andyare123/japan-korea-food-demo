@@ -687,7 +687,6 @@ export default {
   mounted() {
     this.getCart();
     this.getFavorites();
-    this.checkAdminLogin();
     if (!this.isOrderDisplayCleared && this.latestPaidOrderId) {
       this.getOnlyPaidOrder(this.latestPaidOrderId);
     } else {
